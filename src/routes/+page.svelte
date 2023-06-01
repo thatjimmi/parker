@@ -113,8 +113,8 @@
 
     let chosenEvent = {};
     let title = "";
-    let starttidspunkt = "";
-    let endetidspunkt = "";
+    let starttidspunkt = "12:00";
+    let endetidspunkt = "12:00";
 
     function addEvent() {
         const start = combineDateAndTime(fromDate, starttidspunkt);
@@ -215,6 +215,7 @@
                             class="px-4 bg-gray-100 pt-2 pb-1.5 w-full rounded-lg border border-gray-300"
                             id="start"
                             name="start"
+                            placeholder="00:00"
                             step="3600"
                             bind:value={starttidspunkt}
                         />
@@ -226,6 +227,7 @@
                             class="px-4 bg-gray-100 pt-2 pb-1.5 w-full rounded-lg border border-gray-300"
                             id="end"
                             name="end"
+                            placeholder="00:00"
                             step="3600"
                             bind:value={endetidspunkt}
                         />

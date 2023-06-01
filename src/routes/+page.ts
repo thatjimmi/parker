@@ -13,8 +13,8 @@ export const load = async ({ fetch, params}) => {
         data: [{
             id: '1',
             title: '4B, 3.th',
-            start: new Date("2023-05-30T12:00:00"),
-            end: new Date("2023-05-30T14:00:00"),
+            start: "2023-06-02T12:00:00",
+            end: "2023-06-02T14:00:00",
         },
         {
             id: '2',

@@ -167,153 +167,228 @@
 
         clearFields();
     }
+
+    let showCalendar = true;
+
+    function toggleSwitch() {
+        showCalendar = !showCalendar;
+    }
+
+    function getNearestEvent() {
+        const now = new Date();
+        const sortedEvents = events.sort((a, b) => {
+            const aDate = new Date(a.start);
+            const bDate = new Date(b.start);
+            return aDate - bDate;
+        });
+
+        const nearestEvent = sortedEvents.find((e) => {
+            const eventDate = new Date(e.start);
+            return eventDate > now;
+        });
+
+        // if no event is found, return the last event
+        if (!nearestEvent) {
+            return sortedEvents[sortedEvents.length - 1];
+        }
+
+        console.log("nearestEvent: ", nearestEvent);
+
+        return nearestEvent;
+    }
+
+    $: nearestEvent = getNearestEvent();
+
+    // function that returns the time until the next event
+    function getTimeUntilNextEvent() {
+        const now = new Date();
+        const nearestEvent = getNearestEvent();
+
+        const eventDate = new Date(nearestEvent.start);
+        const diff = eventDate - now;
+
+        const hours = Math.floor(diff / 1000 / 60 / 60);
+        const minutes = Math.floor((diff / 1000 / 60 / 60 - hours) * 60);
+
+        // if the event is happening now return that the event is happening now
+        if (hours === 0 && minutes === 0) {
+            return "Nu";
+        }
+
+        return `${hours} timer og ${minutes} minutter`;
+    }
+
+    $: timeUntilNextEvent = getTimeUntilNextEvent();
 </script>
 
-<div class="flex flex-col justify-center max-w-12xl mx-auto">
-    <h3
-        class="text-3xl md:text-4xl xl:text-5xl text-center font-semibold pt-4 px-8"
-    >
-        Reservation af parkeringsplads
-    </h3>
-    <div
-        class="pb-8 pt-8 px-8 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto md:shadow border-gray-300 md:border m-4 rounded-xl"
-    >
-        <div class="lg:flex space-x-4 hidden">
-            <div
-                class="w-1/2 shadow border pt-6 pb-4 px-4 rounded-xl border-gray-300 bg-gray-50"
-            >
-                <DatePicker bind:value={fromDate} />
-            </div>
-            <div
-                class="w-1/2 border shadow pt-6 pb-4 px-4 rounded-xl border-gray-300 bg-gray-50"
-            >
-                <DatePicker bind:value={toDate} />
-            </div>
-        </div>
-        <div class="flex flex-col lg:hidden">
-            <div class="mx-auto space-y-1 w-full">
-                <p>Fra</p>
-                <DateInput
-                    bind:value={fromDate}
-                    styling="text-lg text-center w-full text-gray-800 bg-gray-100"
-                />
-                <p>Til</p>
-                <DateInput
-                    bind:value={toDate}
-                    styling="text-lg w-full text-gray-800 text-center bg-gray-100"
-                />
-            </div>
-        </div>
+<!-- <h3
+    class="text-3xl md:text-4xl xl:text-5xl text-center font-semibold pt-4 px-8"
+>
+    Reservation af parkeringsplads
+</h3> -->
+<div class="flex flex-col justify-center max-w-12xl mx-auto text-[#16182F]">
+    <!-- switch toggle for switching between calendar and booking a spot -->
+    <div class="flex pt-4 space-x-2 justify-center">
+        <button
+            class="{showCalendar
+                ? 'bg-gray-100 border-gray-400 '
+                : ''} border px-3 py-1 rounded"
+            on:click={toggleSwitch}
+        >
+            <span class="text-sm">Kalender</span>
+        </button>
 
-        <div class="lg:flex pt-4 lg:space-x-4 space-y-2 lg:space-y-0">
-            <div class="flex flex-col space-y-4 lg:w-1/2 mx-auto">
-                <div class="flex space-x-2">
-                    <div class="flex flex-col w-full space-y-2">
-                        <label for="start">Starttidspunkt</label>
-                        <input
-                            type="time"
-                            class="px-4 bg-gray-100 pt-2 pb-1.5 w-full rounded-lg border border-gray-300"
-                            id="start"
-                            name="start"
-                            placeholder="00:00"
-                            step="3600"
-                            bind:value={starttidspunkt}
-                        />
-                    </div>
-                    <div class="flex flex-col w-full space-y-2">
-                        <label for="end">Sluttidspunkt</label>
-                        <input
-                            type="time"
-                            class="px-4 bg-gray-100 pt-2 pb-1.5 w-full rounded-lg border border-gray-300"
-                            id="end"
-                            name="end"
-                            placeholder="00:00"
-                            step="3600"
-                            bind:value={endetidspunkt}
-                        />
-                    </div>
+        <button
+            class="{!showCalendar
+                ? 'bg-gray-100 border-gray-400'
+                : ''} border px-3 py-1 rounded"
+            on:click={toggleSwitch}
+        >
+            <span class="text-sm">Reserver</span>
+        </button>
+    </div>
+    {#if !showCalendar}
+        <div
+            class="pb-8 pt-8 px-8 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto md:shadow border-gray-300 md:border m-4 rounded-xl"
+        >
+            <div class="lg:flex space-x-4 hidden">
+                <div
+                    class="w-1/2 shadow border pt-6 pb-4 px-4 rounded-xl border-gray-300 bg-gray-50"
+                >
+                    <DatePicker bind:value={fromDate} />
                 </div>
-                <div class="flex flex-col space-y-2">
-                    <label for="title">Hvem reserverer</label>
-                    <input
-                        class="bg-gray-100 px-4 py-2 text-gray-800 rounded-lg border border-gray-300"
-                        type="text"
-                        id="title"
-                        name="title"
-                        bind:value={title}
+                <div
+                    class="w-1/2 border shadow pt-6 pb-4 px-4 rounded-xl border-gray-300 bg-gray-50"
+                >
+                    <DatePicker bind:value={toDate} />
+                </div>
+            </div>
+            <div class="flex flex-col lg:hidden">
+                <div class="mx-auto space-y-1 w-full">
+                    <p>Fra</p>
+                    <DateInput
+                        bind:value={fromDate}
+                        styling="text-lg text-center w-full text-gray-800 bg-gray-100"
+                    />
+                    <p>Til</p>
+                    <DateInput
+                        bind:value={toDate}
+                        styling="text-lg w-full text-gray-800 text-center bg-gray-100"
                     />
                 </div>
             </div>
-            {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
-                <div class="rounded-lg text-gray-900 lg:w-1/2 space-y-4">
-                    <div class="space-y-2">
-                        <p>Valgt fra</p>
-                        <p
-                            class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-300"
-                        >
-                            {parseAndFormatDate(
-                                combineDateAndTime(fromDate, starttidspunkt)
-                            )}
-                        </p>
+
+            <div class="lg:flex pt-4 lg:space-x-4 space-y-2 lg:space-y-0">
+                <div class="flex flex-col space-y-4 lg:w-1/2 mx-auto">
+                    <div class="flex space-x-2">
+                        <div class="flex flex-col w-full space-y-2">
+                            <label for="start">Starttidspunkt</label>
+                            <input
+                                type="time"
+                                class="px-4 bg-gray-100 pt-2 pb-1.5 w-full rounded-lg border border-gray-300"
+                                id="start"
+                                name="start"
+                                placeholder="00:00"
+                                step="3600"
+                                bind:value={starttidspunkt}
+                            />
+                        </div>
+                        <div class="flex flex-col w-full space-y-2">
+                            <label for="end">Sluttidspunkt</label>
+                            <input
+                                type="time"
+                                class="px-4 bg-gray-100 pt-2 pb-1.5 w-full rounded-lg border border-gray-300"
+                                id="end"
+                                name="end"
+                                placeholder="00:00"
+                                step="3600"
+                                bind:value={endetidspunkt}
+                            />
+                        </div>
                     </div>
-                    <div class="space-y-2">
-                        <p>Til</p>
-                        <p
-                            class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-300"
-                        >
-                            {parseAndFormatDate(
-                                combineDateAndTime(toDate, endetidspunkt)
-                            )}
-                        </p>
+                    <div class="flex flex-col space-y-2">
+                        <label for="title">Lejlighed</label>
+                        <input
+                            class="bg-gray-100 px-4 py-2 text-gray-800 rounded-lg border border-gray-300"
+                            type="text"
+                            id="title"
+                            name="title"
+                            bind:value={title}
+                        />
                     </div>
                 </div>
+                {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
+                    <div class="rounded-lg text-gray-900 lg:w-1/2 space-y-4">
+                        <div class="space-y-2">
+                            <p>Valgt fra</p>
+                            <p
+                                class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-300"
+                            >
+                                {parseAndFormatDate(
+                                    combineDateAndTime(fromDate, starttidspunkt)
+                                )}
+                            </p>
+                        </div>
+                        <div class="space-y-2">
+                            <p>Til</p>
+                            <p
+                                class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-300"
+                            >
+                                {parseAndFormatDate(
+                                    combineDateAndTime(toDate, endetidspunkt)
+                                )}
+                            </p>
+                        </div>
+                    </div>
+                {:else}
+                    <div
+                        class="rounded-lg text-gray-900 text-center lg:w-1/2"
+                    />
+                {/if}
+            </div>
+            {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
+                <div class="text-center">
+                    <button
+                        class="bg-sky-600 mt-6 text-white py-2 px-2 lg:w-1/3 rounded-lg w-full mx-auto shadow border border-gray-200"
+                        type="submit"
+                        on:click={addEvent}>Lav reservation</button
+                    >
+                </div>
             {:else}
-                <div class="rounded-lg text-gray-900 text-center lg:w-1/2" />
+                <div class="text-center">
+                    <p
+                        class="bg-gray-300 mt-6 text-gray-500 py-2 px-2 lg:w-1/3 w-full rounded-lg mx-auto shadow border border-gray-300"
+                    >
+                        Lav reservation
+                    </p>
+                </div>
             {/if}
         </div>
-        {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
-            <div class="text-center">
-                <button
-                    class="bg-sky-600 mt-6 text-white py-2 px-2 lg:w-1/3 rounded-lg w-full mx-auto shadow border border-gray-200"
-                    type="submit"
-                    on:click={addEvent}>Lav reservation</button
-                >
-            </div>
-        {:else}
-            <div class="text-center">
-                <p
-                    class="bg-gray-300 mt-6 text-gray-500 py-2 px-2 lg:w-1/3 w-full rounded-lg mx-auto shadow border border-gray-300"
-                >
-                    Lav reservation
-                </p>
-            </div>
-        {/if}
-    </div>
-    <div
-        class="pb-6 pt-4 md:border border-gray-300 px-8 md:shadow w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto rounded-xl mb-4"
-    >
-        <div class="">
-            <h2 class="text-3xl text-center">Reserverationer</h2>
-            <button on:click={() => setOptionsPlugins()}>Skift view</button>
-        </div>
-
-        <div class="bg-gray-50 p-4 rounded-lg shadow border-gray-300 border">
-            {#key plugins}
-                <Calendar {plugins} {options} />
-            {/key}
-        </div>
-        {#if chosenEvent && chosenEvent.id}
+    {/if}
+    {#if showCalendar}
+        <div
+            class="pb-6 pt-4 mt-4 md:border border-gray-300 px-8 md:shadow w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto rounded-xl mb-4"
+        >
             <div
-                class="mt-4 bg-gray-50 shadow mx-auto px-4 py-4 rounded-lg border border-gray-300"
+                class="mt-4 bg-gray-50 shadow mx-auto px-4 mb-4 pb-4 pt-3 rounded-lg border border-gray-300"
             >
-                <h3 class="text-xl">{chosenEvent?.title}</h3>
+                <h3 class="text-lg md:text-xl">
+                    <span class="text-gray-800"
+                        >Næste reservering er foretaget af
+                    </span>
+                    {nearestEvent?.title}
+                    <span class="text-[16px] text-gray-700 flex"
+                        >om {timeUntilNextEvent}</span
+                    >
+                </h3>
+
                 <div class="flex text-gray-600 space-x-2 text-sm">
                     <div class="space-y-0 w-1/2">
                         <p>Fra</p>
                         <p
                             class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg border border-gray-300"
                         >
-                            {parseAndFormatDate(chosenEvent.start)}
+                            {parseAndFormatDate(nearestEvent?.start)}
                         </p>
                     </div>
                     <div class="space-y-0 w-1/2">
@@ -321,15 +396,52 @@
                         <p
                             class="bg-gray-100 px-4 text-gray-800 py-2 rounded-lg border border-gray-300"
                         >
-                            {parseAndFormatDate(chosenEvent.end)}
+                            {parseAndFormatDate(nearestEvent?.end)}
                         </p>
                     </div>
                 </div>
             </div>
-        {:else}
-            <div class="mt-4">
-                <h3 class="text-xl">Ingen reservation valgt</h3>
+            <div
+                class="bg-gray-50 p-4 rounded-lg shadow border-gray-300 border"
+            >
+                {#key plugins}
+                    <button
+                        on:click={() => setOptionsPlugins()}
+                        class="text-gray-600 border py-1 px-2 rounded border-gray-300"
+                        >Skift kalendervisning</button
+                    >
+                    <Calendar {plugins} {options} />
+                {/key}
             </div>
-        {/if}
-    </div>
+            {#if chosenEvent && chosenEvent.id}
+                <div
+                    class="mt-4 bg-gray-50 shadow mx-auto px-4 pb-4 py-3 rounded-lg border border-gray-300"
+                >
+                    <h3 class="text-xl">{chosenEvent?.title}</h3>
+                    <div class="flex text-gray-600 space-x-2 text-sm">
+                        <div class="space-y-0 w-1/2">
+                            <p>Fra</p>
+                            <p
+                                class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg border border-gray-300"
+                            >
+                                {parseAndFormatDate(chosenEvent.start)}
+                            </p>
+                        </div>
+                        <div class="space-y-0 w-1/2">
+                            <p>Til</p>
+                            <p
+                                class="bg-gray-100 px-4 text-gray-800 py-2 rounded-lg border border-gray-300"
+                            >
+                                {parseAndFormatDate(chosenEvent.end)}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {:else}
+                <div class="mt-4">
+                    <h3 class="text-xl">Ingen reservation valgt</h3>
+                </div>
+            {/if}
+        </div>
+    {/if}
 </div>

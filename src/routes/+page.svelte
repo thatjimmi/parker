@@ -407,7 +407,7 @@
                 {#key plugins}
                     <button
                         on:click={() => setOptionsPlugins()}
-                        class="text-gray-600 border py-1 px-2 rounded border-gray-300 text-sm"
+                        class="text-gray-600 border py-1 px-2 rounded border-gray-300 text-sm mb-2"
                         >Skift kalendervisning</button
                     >
                     <Calendar {plugins} {options} />

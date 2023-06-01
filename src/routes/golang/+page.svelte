@@ -1,5 +1,5 @@
 <script>
-  import "../../../style.css";
+  import "../../style.css";
   import SvelteSeo from "svelte-seo";
   import Nav from "../../components/Nav.svelte";
 
@@ -42,10 +42,10 @@
   };
 </script>
 
-<div class="bg-gray-300 h-screen">
+<!-- <div class="bg-gray-300 h-screen">
   <Nav extraClass="bg-white" />
   <SvelteSeo />
-  <!-- form to send username and department -->
+  form to send username and department
   <div class="flex flex-col">
     <div class="flex space-x-2 justify-center py-4 items-center">
       <form class="flex flex-col space-y-2">
@@ -83,4 +83,4 @@
       {/each}
     </div>
   </div>
-</div>
+</div> -->

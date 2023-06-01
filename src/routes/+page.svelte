@@ -44,11 +44,13 @@
             console.log("dateClick", e);
         },
         eventClick: (e) => {
-            console.log("eventClick", e);
             chosenEvent = e.event;
         },
         eventContent: (e) => {
             return `${e.event.title}`;
+        },
+        noEventsClick: (e) => {
+            console.log("noEventClicks", e);
         },
         buttonText: {
             today: "I dag",
@@ -87,7 +89,7 @@
         };
 
         const formatter = new Intl.DateTimeFormat("da-DK", options);
-        console.log(formatter.format(date));
+
         const formattedDate = formatter.format(date);
 
         const replace = formattedDate.replace(/\//g, "-");
@@ -107,7 +109,7 @@
         newDateObj.setMinutes(Number(minutes));
         newDateObj.setSeconds(0);
         newDateObj.setMilliseconds(0);
-        console.log("dateObj: ", newDateObj);
+
         return newDateObj;
     }
 
@@ -192,8 +194,6 @@
             return sortedEvents[sortedEvents.length - 1];
         }
 
-        console.log("nearestEvent: ", nearestEvent);
-
         return nearestEvent;
     }
 
@@ -249,7 +249,7 @@
     </div>
     {#if !showCalendar}
         <div
-            class="pb-8 pt-8 px-8 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto md:shadow border-gray-300 md:border m-4 rounded-xl"
+            class="pb-8 md:pt-8 px-8 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto md:shadow border-gray-300 md:border m-4 rounded-xl"
         >
             <div class="lg:flex space-x-4 hidden">
                 <div
@@ -367,7 +367,7 @@
     {/if}
     {#if showCalendar}
         <div
-            class="pb-6 pt-4 mt-4 md:border border-gray-300 px-8 md:shadow w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto rounded-xl mb-4"
+            class="pb-6 md:pt-4 md:mt-4 md:border border-gray-300 px-8 md:shadow w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto rounded-xl mb-4"
         >
             <div
                 class="mt-4 bg-gray-50 shadow mx-auto px-4 mb-4 pb-4 pt-3 rounded-lg border border-gray-300"
@@ -407,7 +407,7 @@
                 {#key plugins}
                     <button
                         on:click={() => setOptionsPlugins()}
-                        class="text-gray-600 border py-1 px-2 rounded border-gray-300"
+                        class="text-gray-600 border py-1 px-2 rounded border-gray-300 text-sm"
                         >Skift kalendervisning</button
                     >
                     <Calendar {plugins} {options} />

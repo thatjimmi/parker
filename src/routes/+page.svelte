@@ -1,237 +1,333 @@
+<!-- https://github.com/vkurko/calendar -->
 <script>
-  import Calendar from "../components/Calendar.svelte";
-  import { createEventDispatcher, onMount } from "svelte";
+    // import Calendar from "@event-calendar/core";
+    import Calendar from "../../components/@event-calendar/core";
+    import TimeGrid from "@event-calendar/time-grid";
+    import Interaction from "@event-calendar/interaction";
+    import List from "@event-calendar/list";
+    import DayGrid from "@event-calendar/day-grid";
+    import DatePicker from "../../components/DatePicker/DatePicker.svelte";
+    import DateInput from "../../components/DatePicker/DateInput.svelte";
 
-  var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  let monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+    export let data;
 
-  let headers = [];
-  let now = new Date();
-  let year = now.getFullYear(); //	this is the month & year displayed
-  let month = now.getMonth();
-  let eventText = "Click an item or date";
+    let fromDate = null;
+    let toDate = null;
 
-  var days = []; //	The days to display in each box
+    let events = data.data || [];
 
-  function randInt(max) {
-    return Math.floor(Math.random() * max) + 1;
-  }
+    // let plugins = [TimeGrid, Interaction];
+    $: plugins = [DayGrid];
 
-  //	The Calendar Component just displays stuff in a row & column. It has no knowledge of dates.
-  //	The items[] below are placed (by you) in a specified row & column of the calendar.
-  //	You need to call findRowCol() to calc the row/col based on each items start date. Each date box has a Date() property.
-  //	And, if an item overlaps rows, then you need to add a 2nd item on the subsequent row.
-  var items = [];
-
-  function initMonthItems() {
-    let y = year;
-    let m = month;
-    let d1 = new Date(y, m, randInt(7) + 7);
-    items = [
-      {
-        title: "11:00 Task Early in month",
-        className: "task--primary",
-        date: new Date(y, m, randInt(6)),
-        len: randInt(4) + 1,
-      },
-      {
-        title: "7:30 Wk 2 tasks",
-        className: "task--warning",
-        date: d1,
-        len: randInt(4) + 2,
-      },
-      {
-        title: "Overlapping Stuff (isBottom:true)",
-        date: d1,
-        className: "task--info",
-        len: 4,
-        isBottom: true,
-      },
-      {
-        title: "10:00 More Stuff to do",
-        date: new Date(y, m, randInt(7) + 14),
-        className: "task--info",
-        len: randInt(4) + 1,
-        detailHeader: "Difficult",
-        detailContent: "But not especially so",
-      },
-      {
-        title: "All day task",
-        date: new Date(y, m, randInt(7) + 21),
-        className: "task--danger",
-        len: 1,
-        vlen: 2,
-      },
-    ];
-
-    //This is where you calc the row/col to put each dated item
-    for (let i of items) {
-      let rc = findRowCol(i.date);
-      if (rc == null) {
-        console.log("didn`t find date for ", i);
-        console.log(i.date);
-        console.log(days);
-        i.startCol = i.startRow = 0;
-      } else {
-        i.startCol = rc.col;
-        i.startRow = rc.row;
-      }
+    let view = "dayGrid";
+    function setOptionsPlugins() {
+        // shift between dayGrid and timeGrid and list
+        if (view === "dayGrid") {
+            plugins = [TimeGrid];
+            view = "timeGrid";
+        } else if (view === "timeGrid") {
+            plugins = [List];
+            view = "list";
+        } else if (view === "list") {
+            plugins = [DayGrid];
+            view = "dayGrid";
+        }
     }
-  }
 
-  $: month, year, initContent();
+    // let plugins = [List];
+    let options = {
+        // view: "dayGrid",
+        events: events,
+        allDaySlot: false,
+        dateClick: (e) => {
+            console.log("dateClick", e);
+        },
+        eventClick: (e) => {
+            console.log("eventClick", e);
+            chosenEvent = e.event;
+        },
+        eventContent: (e) => {
+            return `${e.event.title}`;
+        },
+        buttonText: {
+            today: "I dag",
+            month: "Måned",
+            week: "Uge",
+            day: "Dag",
+            list: "Liste",
+        },
+        // height: "40%",
+        // slotMinTime: "08:00:00",
+        // slotMaxTime: "20:00:00",
+    };
 
-  // choose what date/day gets displayed in each date box.
-  function initContent() {
-    headers = dayNames;
-    initMonth();
-    initMonthItems();
-  }
-
-  function initMonth() {
-    days = [];
-    let monthAbbrev = monthNames[month].slice(0, 3);
-    let nextMonthAbbrev = monthNames[(month + 1) % 12].slice(0, 3);
-    //	find the last Monday of the previous month
-    var firstDay = new Date(year, month, 1).getDay();
-    //console.log('fd='+firstDay+' '+dayNames[firstDay]);
-    var daysInThisMonth = new Date(year, month + 1, 0).getDate();
-    var daysInLastMonth = new Date(year, month, 0).getDate();
-    var prevMonth = month == 0 ? 11 : month - 1;
-
-    //	show the days before the start of this month (disabled) - always less than 7
-    for (let i = daysInLastMonth - firstDay; i < daysInLastMonth; i++) {
-      let d = new Date(prevMonth == 11 ? year - 1 : year, prevMonth, i + 1);
-      days.push({ name: "" + (i + 1), enabled: false, date: d });
+    function clearFields() {
+        title = "";
+        starttidspunkt = "";
+        endetidspunkt = "";
+        fromDate = null;
+        toDate = null;
     }
-    //	show the days in this month (enabled) - always 28 - 31
-    for (let i = 0; i < daysInThisMonth; i++) {
-      let d = new Date(year, month, i + 1);
-      if (i == 0)
-        days.push({
-          name: monthAbbrev + " " + (i + 1),
-          enabled: true,
-          date: d,
+
+    function getHoursAndMinutes(date) {
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        return `${hours}:${minutes < 10 ? "0" + minutes : minutes}`;
+    }
+
+    function formatDate(date) {
+        const options = {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+        };
+
+        const formatter = new Intl.DateTimeFormat("da-DK", options);
+        console.log(formatter.format(date));
+        const formattedDate = formatter.format(date);
+
+        const replace = formattedDate.replace(/\//g, "-");
+        // first letter uppercase
+        return replace.charAt(0).toUpperCase() + replace.slice(1);
+    }
+
+    function parseAndFormatDate(timeString) {
+        const date = new Date(timeString);
+        return formatDate(date);
+    }
+
+    function combineDateAndTime(dateObj, timeString) {
+        const [hours, minutes] = timeString.split(":");
+        const newDateObj = new Date(dateObj.getTime());
+        newDateObj.setHours(Number(hours));
+        newDateObj.setMinutes(Number(minutes));
+        newDateObj.setSeconds(0);
+        newDateObj.setMilliseconds(0);
+        console.log("dateObj: ", newDateObj);
+        return newDateObj;
+    }
+
+    let chosenEvent = {};
+    let title = "";
+    let starttidspunkt = "";
+    let endetidspunkt = "";
+
+    function addEvent() {
+        const start = combineDateAndTime(fromDate, starttidspunkt);
+        const end = combineDateAndTime(toDate, endetidspunkt);
+
+        if (start > end) {
+            alert("Starttidspunkt skal være før sluttidspunkt");
+            return;
+        }
+
+        // check if event is already in calendar
+        const eventExists = events.find((e) => {
+            const eventStart = new Date(e.start);
+            const eventEnd = new Date(e.end);
+            return (
+                eventStart.getTime() === start.getTime() &&
+                eventEnd.getTime() === end.getTime()
+            );
         });
-      else days.push({ name: "" + (i + 1), enabled: true, date: d });
-      //console.log('i='+i+'  dt is '+d+' date() is '+d.getDate());
-    }
-    //	show any days to fill up the last row (disabled) - always less than 7
-    for (let i = 0; days.length % 7; i++) {
-      let d = new Date(month == 11 ? year + 1 : year, (month + 1) % 12, i + 1);
-      if (i == 0)
-        days.push({
-          name: nextMonthAbbrev + " " + (i + 1),
-          enabled: false,
-          date: d,
+
+        if (eventExists) {
+            alert("Denne tid er allerede reserveret");
+            return;
+        }
+
+        // check if time is already reserved
+        const eventExistsInTime = events.find((e) => {
+            const eventStart = new Date(e.start);
+            const eventEnd = new Date(e.end);
+            return (
+                (start >= eventStart && start <= eventEnd) ||
+                (end >= eventStart && end <= eventEnd)
+            );
         });
-      else days.push({ name: "" + (i + 1), enabled: false, date: d });
-    }
-  }
 
-  function findRowCol(dt) {
-    for (let i = 0; i < days.length; i++) {
-      let d = days[i].date;
-      if (
-        d.getYear() === dt.getYear() &&
-        d.getMonth() === dt.getMonth() &&
-        d.getDate() === dt.getDate()
-      )
-        return { row: Math.floor(i / 7) + 2, col: (i % 7) + 1 };
-    }
-    return null;
-  }
+        if (eventExistsInTime) {
+            alert("Denne tid er allerede reserveret");
+            return;
+        }
 
-  function itemClick(e) {
-    eventText =
-      "itemClick " + JSON.stringify(e) + " localtime=" + e.date.toString();
-  }
-  function dayClick(e) {
-    eventText =
-      "onDayClick " + JSON.stringify(e) + " localtime=" + e.date.toString();
-  }
-  function headerClick(e) {
-    eventText = "onHheaderClick " + JSON.stringify(e);
-  }
-  function next() {
-    month++;
-    if (month == 12) {
-      year++;
-      month = 0;
+        const event = {
+            id: events.length + 1 + "",
+            title: title,
+            start: start,
+            end: end,
+        };
+
+        events = [...events, event];
+        options.events = events;
+
+        clearFields();
     }
-  }
-  function prev() {
-    if (month == 0) {
-      month = 11;
-      year--;
-    } else {
-      month--;
-    }
-  }
 </script>
 
-<div class="calendar-container">
-  <div class="calendar-header">
-    <h1>
-      <button on:click={() => year--}>&Lt;</button>
-      <button on:click={() => prev()}>&lt;</button>
-      {monthNames[month]}
-      {year}
-      <button on:click={() => next()}>&gt;</button>
-      <button on:click={() => year++}>&Gt;</button>
-    </h1>
-    {eventText}
-  </div>
+<div class="flex flex-col justify-center max-w-12xl mx-auto">
+    <h3
+        class="text-3xl md:text-4xl xl:text-5xl text-center font-semibold pt-4 px-8"
+    >
+        Reservation af parkeringsplads
+    </h3>
+    <div
+        class="pb-8 pt-8 px-8 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto md:shadow border-gray-300 md:border m-4 rounded-xl"
+    >
+        <div class="lg:flex space-x-4 hidden">
+            <div
+                class="w-1/2 shadow border pt-6 pb-4 px-4 rounded-xl border-gray-300 bg-gray-50"
+            >
+                <DatePicker bind:value={fromDate} />
+            </div>
+            <div
+                class="w-1/2 border shadow pt-6 pb-4 px-4 rounded-xl border-gray-300 bg-gray-50"
+            >
+                <DatePicker bind:value={toDate} />
+            </div>
+        </div>
+        <div class="flex flex-col lg:hidden">
+            <div class="mx-auto space-y-1 w-full">
+                <p>Fra</p>
+                <DateInput
+                    bind:value={fromDate}
+                    styling="text-lg text-center w-full text-gray-800 bg-gray-100"
+                />
+                <p>Til</p>
+                <DateInput
+                    bind:value={toDate}
+                    styling="text-lg w-full text-gray-800 text-center bg-gray-100"
+                />
+            </div>
+        </div>
 
-  <Calendar
-    {headers}
-    {days}
-    {items}
-    on:dayClick={(e) => dayClick(e.detail)}
-    on:itemClick={(e) => itemClick(e.detail)}
-    on:headerClick={(e) => headerClick(e.detail)}
-  />
+        <div class="lg:flex pt-4 lg:space-x-4 space-y-2 lg:space-y-0">
+            <div class="flex flex-col space-y-4 lg:w-1/2 mx-auto">
+                <div class="flex flex-col space-y-2">
+                    <label for="title">Hvem reserverer</label>
+                    <input
+                        class="bg-gray-100 px-4 py-2 text-gray-800 rounded-lg border border-gray-300"
+                        type="text"
+                        id="title"
+                        name="title"
+                        bind:value={title}
+                    />
+                </div>
+
+                <div class="flex space-x-2">
+                    <div class="flex flex-col w-1/2 space-y-2">
+                        <label for="start">Starttidspunkt</label>
+                        <input
+                            type="time"
+                            class="px-4 bg-gray-100 pt-2 pb-1.5 rounded-lg border border-gray-300"
+                            id="start"
+                            name="start"
+                            step="3600"
+                            bind:value={starttidspunkt}
+                        />
+                    </div>
+                    <div class="flex flex-col w-1/2 space-y-2">
+                        <label for="end">Sluttidspunkt</label>
+                        <input
+                            type="time"
+                            class="px-4 bg-gray-100 pt-2 pb-1.5 rounded-lg border border-gray-300"
+                            id="end"
+                            name="end"
+                            step="3600"
+                            bind:value={endetidspunkt}
+                        />
+                    </div>
+                </div>
+            </div>
+            {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
+                <div class="rounded-lg text-gray-900 lg:w-1/2 space-y-4">
+                    <div class="space-y-2">
+                        <p>Valgt fra</p>
+                        <p
+                            class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-300"
+                        >
+                            {parseAndFormatDate(
+                                combineDateAndTime(fromDate, starttidspunkt)
+                            )}
+                        </p>
+                    </div>
+                    <div class="space-y-2">
+                        <p>Til</p>
+                        <p
+                            class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-300"
+                        >
+                            {parseAndFormatDate(
+                                combineDateAndTime(toDate, endetidspunkt)
+                            )}
+                        </p>
+                    </div>
+                </div>
+            {:else}
+                <div class="rounded-lg text-gray-900 text-center lg:w-1/2" />
+            {/if}
+        </div>
+        {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
+            <div class="text-center">
+                <button
+                    class="bg-sky-600 mt-6 text-white py-2 w-1/3 rounded-lg mx-auto shadow border border-gray-200"
+                    type="submit"
+                    on:click={addEvent}>Lav reservation</button
+                >
+            </div>
+        {:else}
+            <div class="text-center">
+                <p
+                    class="bg-gray-300 mt-6 text-gray-500 py-2 w-1/3 rounded-lg mx-auto shadow border border-gray-300"
+                >
+                    Lav reservation
+                </p>
+            </div>
+        {/if}
+    </div>
+    <div
+        class="pb-6 pt-4 md:border border-gray-300 px-8 md:shadow w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto rounded-xl mb-4"
+    >
+        <div class="">
+            <h2 class="text-3xl text-center">Reserverationer</h2>
+            <button on:click={() => setOptionsPlugins()}>Skift view</button>
+        </div>
+
+        <div class="bg-gray-50 p-4 rounded-lg shadow border-gray-300 border">
+            {#key plugins}
+                <Calendar {plugins} {options} />
+            {/key}
+        </div>
+        {#if chosenEvent && chosenEvent.id}
+            <div
+                class="mt-4 bg-gray-50 shadow mx-auto px-4 py-4 rounded-lg border border-gray-300"
+            >
+                <h3 class="text-xl">{chosenEvent?.title}</h3>
+                <div class="flex text-gray-600 space-x-2 text-sm">
+                    <div class="space-y-0 w-1/2">
+                        <p>Fra</p>
+                        <p
+                            class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg border border-gray-300"
+                        >
+                            {parseAndFormatDate(chosenEvent.start)}
+                        </p>
+                    </div>
+                    <div class="space-y-0 w-1/2">
+                        <p>Til</p>
+                        <p
+                            class="bg-gray-100 px-4 text-gray-800 py-2 rounded-lg border border-gray-300"
+                        >
+                            {parseAndFormatDate(chosenEvent.end)}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {:else}
+            <div class="mt-4">
+                <h3 class="text-xl">Ingen reservation valgt</h3>
+            </div>
+        {/if}
+    </div>
 </div>
-
-<style>
-  .calendar-container {
-    width: 90%;
-    margin: auto;
-    overflow: hidden;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    background: #fff;
-    max-width: 1200px;
-  }
-  .calendar-header {
-    text-align: center;
-    padding: 20px 0;
-    background: #eef;
-    border-bottom: 1px solid rgba(166, 168, 179, 0.12);
-  }
-  .calendar-header h1 {
-    margin: 0;
-    font-size: 18px;
-  }
-  .calendar-header button {
-    background: #eef;
-    border: 1px;
-    padding: 6;
-    color: rgba(81, 86, 93, 0.7);
-    cursor: pointer;
-    outline: 0;
-  }
-</style>

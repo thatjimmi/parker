@@ -2,12 +2,9 @@
   /** @type {import('./$types').PageData} */
   export let data;
   import Nav from "../../../components/Nav.svelte";
-  import ArticlesCards from "../../../components/ArticlesCards.svelte";
   import "../../../style.css";
-  import SEO from "../../../components/SEO/SEO.svelte";
 </script>
 
-<SEO pageTitle={data.title} metadescription={data.undertitel} />
 <Nav
   color="white"
   visible={true}

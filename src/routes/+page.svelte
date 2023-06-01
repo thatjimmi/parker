@@ -207,23 +207,12 @@
 
         <div class="lg:flex pt-4 lg:space-x-4 space-y-2 lg:space-y-0">
             <div class="flex flex-col space-y-4 lg:w-1/2 mx-auto">
-                <div class="flex flex-col space-y-2">
-                    <label for="title">Hvem reserverer</label>
-                    <input
-                        class="bg-gray-100 px-4 py-2 text-gray-800 rounded-lg border border-gray-300"
-                        type="text"
-                        id="title"
-                        name="title"
-                        bind:value={title}
-                    />
-                </div>
-
                 <div class="flex space-x-2">
                     <div class="flex flex-col w-1/2 space-y-2">
                         <label for="start">Starttidspunkt</label>
                         <input
                             type="time"
-                            class="px-4 bg-gray-100 pt-2 pb-1.5 rounded-lg border border-gray-300"
+                            class="px-4 bg-gray-100 pt-2 pb-1.5 w-full rounded-lg border border-gray-300"
                             id="start"
                             name="start"
                             step="3600"
@@ -234,13 +223,23 @@
                         <label for="end">Sluttidspunkt</label>
                         <input
                             type="time"
-                            class="px-4 bg-gray-100 pt-2 pb-1.5 rounded-lg border border-gray-300"
+                            class="px-4 bg-gray-100 pt-2 pb-1.5 w-full rounded-lg border border-gray-300"
                             id="end"
                             name="end"
                             step="3600"
                             bind:value={endetidspunkt}
                         />
                     </div>
+                </div>
+                <div class="flex flex-col space-y-2">
+                    <label for="title">Hvem reserverer</label>
+                    <input
+                        class="bg-gray-100 px-4 py-2 text-gray-800 rounded-lg border border-gray-300"
+                        type="text"
+                        id="title"
+                        name="title"
+                        bind:value={title}
+                    />
                 </div>
             </div>
             {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
@@ -273,7 +272,7 @@
         {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
             <div class="text-center">
                 <button
-                    class="bg-sky-600 mt-6 text-white py-2 w-1/3 rounded-lg mx-auto shadow border border-gray-200"
+                    class="bg-sky-600 mt-6 text-white py-2 px-2 lg:w-1/3 rounded-lg w-full mx-auto shadow border border-gray-200"
                     type="submit"
                     on:click={addEvent}>Lav reservation</button
                 >
@@ -281,7 +280,7 @@
         {:else}
             <div class="text-center">
                 <p
-                    class="bg-gray-300 mt-6 text-gray-500 py-2 w-1/3 rounded-lg mx-auto shadow border border-gray-300"
+                    class="bg-gray-300 mt-6 text-gray-500 py-2 px-2 lg:w-1/3 rounded-lg mx-auto shadow border border-gray-300"
                 >
                     Lav reservation
                 </p>

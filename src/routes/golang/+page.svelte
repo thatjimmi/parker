@@ -1,7 +1,7 @@
 <script>
-  import "../style.css";
+  import "../../../style.css";
   import SvelteSeo from "svelte-seo";
-  import Nav from "../components/Nav.svelte";
+  import Nav from "../../components/Nav.svelte";
 
   /** @type {import('./$types').PageData} */
   export let data;

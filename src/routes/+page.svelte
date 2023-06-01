@@ -1,15 +1,16 @@
 <!-- https://github.com/vkurko/calendar -->
 <script>
-    // import Calendar from "@event-calendar/core";
-    import Calendar from "../../components/@event-calendar/core";
+    import Calendar from "../components/@event-calendar/core";
     import TimeGrid from "@event-calendar/time-grid";
     import Interaction from "@event-calendar/interaction";
     import List from "@event-calendar/list";
     import DayGrid from "@event-calendar/day-grid";
-    import DatePicker from "../../components/DatePicker/DatePicker.svelte";
-    import DateInput from "../../components/DatePicker/DateInput.svelte";
+    import DatePicker from "../components/DatePicker/DatePicker.svelte";
+    import DateInput from "../components/DatePicker/DateInput.svelte";
 
-    export let data;
+    export let data = {
+        data: [],
+    };
 
     let fromDate = null;
     let toDate = null;

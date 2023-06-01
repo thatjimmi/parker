@@ -64,8 +64,8 @@
 
     function clearFields() {
         title = "";
-        starttidspunkt = "";
-        endetidspunkt = "";
+        starttidspunkt = "12:00";
+        endetidspunkt = "12:00";
         fromDate = null;
         toDate = null;
     }
@@ -208,7 +208,7 @@
         <div class="lg:flex pt-4 lg:space-x-4 space-y-2 lg:space-y-0">
             <div class="flex flex-col space-y-4 lg:w-1/2 mx-auto">
                 <div class="flex space-x-2">
-                    <div class="flex flex-col w-1/2 space-y-2">
+                    <div class="flex flex-col w-full space-y-2">
                         <label for="start">Starttidspunkt</label>
                         <input
                             type="time"
@@ -220,7 +220,7 @@
                             bind:value={starttidspunkt}
                         />
                     </div>
-                    <div class="flex flex-col w-1/2 space-y-2">
+                    <div class="flex flex-col w-full space-y-2">
                         <label for="end">Sluttidspunkt</label>
                         <input
                             type="time"

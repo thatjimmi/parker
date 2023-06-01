@@ -1,10 +1,11 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@fontsource/sora': ^4.5.12
-  '@fullcalendar/common': 5.11.5
-  '@fullcalendar/core': ^6.1.8
-  '@fullcalendar/daygrid': ^6.1.8
+  '@event-calendar/core': ^1.3.0
+  '@event-calendar/day-grid': ^1.3.0
+  '@event-calendar/interaction': ^1.3.0
+  '@event-calendar/list': ^1.3.0
+  '@event-calendar/time-grid': ^1.3.0
   '@onsvisual/svelte-maps': ^1.1.6
   '@popperjs/core': ^2.11.7
   '@rgossiaux/svelte-headlessui': ^1.0.2
@@ -30,7 +31,6 @@ specifiers:
   postcss-load-config: ^4.0.1
   svelte: ^3.54.0
   svelte-check: ^2.9.2
-  svelte-fullcalendar: 2.0.0-beta.0
   svelte-headlessui: ^0.0.15
   svelte-motion: ^0.11.5
   svelte-popperjs: ^1.3.2
@@ -44,8 +44,6 @@ specifiers:
   xhr2: ^0.2.1
 
 dependencies:
-  '@fontsource/sora': 4.5.12
-  '@fullcalendar/common': 5.11.5
   '@onsvisual/svelte-maps': 1.1.6_n6eku2jwtg7g233xr2urvga4sq
   '@popperjs/core': 2.11.7
   logsnag: 0.1.6
@@ -61,8 +59,11 @@ dependencies:
   xhr2: 0.2.1
 
 devDependencies:
-  '@fullcalendar/core': 6.1.8
-  '@fullcalendar/daygrid': 6.1.8_@fullcalendar+core@6.1.8
+  '@event-calendar/core': 1.3.1
+  '@event-calendar/day-grid': 1.3.1
+  '@event-calendar/interaction': 1.3.1
+  '@event-calendar/list': 1.3.1
+  '@event-calendar/time-grid': 1.3.1
   '@rgossiaux/svelte-headlessui': 1.0.2_svelte@3.58.0
   '@sveltejs/adapter-auto': 1.0.3_@sveltejs+kit@1.16.0
   '@sveltejs/adapter-netlify': 1.0.5_@sveltejs+kit@1.16.0
@@ -79,7 +80,6 @@ devDependencies:
   postcss-load-config: 4.0.1_postcss@8.4.23
   svelte: 3.58.0
   svelte-check: 2.10.3_z4qdfiwkj4lltp3x24e5qnnebi
-  svelte-fullcalendar: 2.0.0-beta.0_o2rnczdkomxetlyh3kskox7u64
   svelte-motion: 0.11.5_svelte@3.58.0
   svelte-preprocess: 4.10.7_e5dquh5th5t45wgs76vknabg2a
   svelte-seo: 1.5.3
@@ -639,37 +639,39 @@ packages:
     dev: true
     optional: true
 
-  /@fontsource/sora/4.5.12:
-    resolution: {integrity: sha512-7pWwrWIKcLH0pvKCSssb96KFFKwt5+eKHC4yHfFYtxapQ6Ax+/Rj02QHnIkXyy5nc5cOvyOAQM2MAIGlMtoj9w==}
-    dev: false
-
-  /@fullcalendar/common/5.11.5:
-    resolution: {integrity: sha512-3iAYiUbHXhjSVXnYWz27Od2cslztUPsOwiwKlfGvQxBixv2Kl6a8IPwaijKFYJHXdwYmfPoEgK7rvqAGVoIYwA==}
+  /@event-calendar/core/1.3.1:
+    resolution: {integrity: sha512-Ogx96+NqvwyW/9Qq/+q15ZPNK3zY9DpCkDA6VtfrVH9d+BvDzes+Lg58kRWTCltkItZUnrN8LclV3s+exTLcug==}
     dependencies:
-      tslib: 2.5.0
-
-  /@fullcalendar/core/6.1.8:
-    resolution: {integrity: sha512-i8JBIvZCWGO9dsMEDcx9bnsQZ9PtGSJdOXGgWbhLaGq2iq41OBdp9g9gM4b/Otv2oK8bL5Gl6CsMmb/HkDtA6Q==}
-    dependencies:
-      preact: 10.12.1
+      svelte: 3.59.1
     dev: true
 
-  /@fullcalendar/daygrid/6.1.8_@fullcalendar+core@6.1.8:
-    resolution: {integrity: sha512-kCZxQFKb9Vqa3CZRX0v7rMSJ2mlTt4gDpyLfiNJKxUAq7W51uKurPaFZWicaXy1ESHVBxKNlbx5uNjBpyu50JQ==}
-    peerDependencies:
-      '@fullcalendar/core': ~6.1.8
+  /@event-calendar/day-grid/1.3.1:
+    resolution: {integrity: sha512-+rhxGlyl+5B1CF3ej3n4fW8FH3/EHpc3TQs7CkoL66JT4y2JqZ3kdoI1Dlada786bL8R84AIIool4VDvgYpAXA==}
     dependencies:
-      '@fullcalendar/core': 6.1.8
+      '@event-calendar/core': 1.3.1
+      svelte: 3.59.1
     dev: true
 
-  /@fullcalendar/interaction/5.11.5:
-    resolution: {integrity: sha512-Vg9uw8zKXZc2RP7it88U8R/kxJIQsK4pyv+s+RhlvT5NBZ9KLOh5y2xGCS4A4hyY7qLrzugxnKYlu6NwNqJ/RQ==}
-    requiresBuild: true
+  /@event-calendar/interaction/1.3.1:
+    resolution: {integrity: sha512-kUSzYsl6pc/s98In8mIZH0yx9FMdo7mWws4C7rKXmSxDTPsFBLVHYvCAj53TN/E/1wjZxZo2UtONt/dbKpWPLQ==}
     dependencies:
-      '@fullcalendar/common': 5.11.5
-      tslib: 2.5.0
+      '@event-calendar/core': 1.3.1
+      svelte: 3.59.1
     dev: true
-    optional: true
+
+  /@event-calendar/list/1.3.1:
+    resolution: {integrity: sha512-5dyRQ7qhxF02PKstWR+Fk6gUd/M3mMVQXOKhLnkzN0z9CaP/BiltukDsbwc8F0LljxTf+IKpZu6a9LEMCgNARA==}
+    dependencies:
+      '@event-calendar/core': 1.3.1
+      svelte: 3.59.1
+    dev: true
+
+  /@event-calendar/time-grid/1.3.1:
+    resolution: {integrity: sha512-S7plwtt3Llf8t1BtCjw4Odnv7czR0DL585hRXSPN5Cs0SYPUYINNh2XRd8p6ybHb30z6lzFSAyMA/3IC+b1Zmg==}
+    dependencies:
+      '@event-calendar/core': 1.3.1
+      svelte: 3.59.1
+    dev: true
 
   /@iarna/toml/2.2.5:
     resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
@@ -2312,10 +2314,6 @@ packages:
     resolution: {integrity: sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==}
     dev: false
 
-  /preact/10.12.1:
-    resolution: {integrity: sha512-l8386ixSsBdbreOAkqtrwqHwdvR35ID8c3rKPa8lCWuO86dBi32QWHV4vfsZK1utLLFMvw+Z5Ad4XLkZzchscg==}
-    dev: true
-
   /preact/10.13.2:
     resolution: {integrity: sha512-q44QFLhOhty2Bd0Y46fnYW0gD/cbVM9dUVtNTDKPcdXSMA7jfY+Jpd6rk3GB0lcQss0z5s/6CmVP0Z/hV+g6pw==}
     dev: true
@@ -2651,18 +2649,6 @@ packages:
       - sugarss
     dev: true
 
-  /svelte-fullcalendar/2.0.0-beta.0_o2rnczdkomxetlyh3kskox7u64:
-    resolution: {integrity: sha512-fhRfLxNy85ExPqbwZlWMMgPiTqFpgp6kkekfuDVS8ml93QvnJdbJeMG5Ax12dsJOLFnfRiAY4nlyLpNTCZRuqA==}
-    peerDependencies:
-      '@fullcalendar/common': ^5.0.0
-      '@fullcalendar/core': ^5.0.0
-    dependencies:
-      '@fullcalendar/common': 5.11.5
-      '@fullcalendar/core': 6.1.8
-    optionalDependencies:
-      '@fullcalendar/interaction': 5.11.5
-    dev: true
-
   /svelte-headlessui/0.0.15:
     resolution: {integrity: sha512-yIRD2Wg8pqUOq7cbSgu4RKQ2FXf8vM2ORD3a8/d9rSxDWlBr8Ojt58VpFgdn9Fy0zUeI9By3qFRUaL+wD+Jf4A==}
     dependencies:
@@ -2769,6 +2755,11 @@ packages:
   /svelte/3.58.0:
     resolution: {integrity: sha512-brIBNNB76mXFmU/Kerm4wFnkskBbluBDCjx/8TcpYRb298Yh2dztS2kQ6bhtjMcvUhd5ynClfwpz5h2gnzdQ1A==}
     engines: {node: '>= 8'}
+
+  /svelte/3.59.1:
+    resolution: {integrity: sha512-pKj8fEBmqf6mq3/NfrB9SLtcJcUvjYSWyePlfCqN9gujLB25RitWK8PvFzlwim6hD/We35KbPlRteuA6rnPGcQ==}
+    engines: {node: '>= 8'}
+    dev: true
 
   /tailwindcss/3.3.2:
     resolution: {integrity: sha512-9jPkMiIBXvPc2KywkraqsUfbfj+dHDb+JPWtSJa9MLFdrPyazI7q6WX2sUrm7R9eVR7qqv3Pas7EvQFzxKnI6w==}

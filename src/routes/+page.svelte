@@ -280,7 +280,7 @@
         {:else}
             <div class="text-center">
                 <p
-                    class="bg-gray-300 mt-6 text-gray-500 py-2 px-2 lg:w-1/3 rounded-lg mx-auto shadow border border-gray-300"
+                    class="bg-gray-300 mt-6 text-gray-500 py-2 px-2 lg:w-1/3 w-full rounded-lg mx-auto shadow border border-gray-300"
                 >
                     Lav reservation
                 </p>

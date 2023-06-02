@@ -14,7 +14,7 @@ export const load = async ({ fetch, params}) => {
             id: '1',
             title: '4B, 3.th',
             start: "2023-06-02T12:00:00",
-            end: "2023-06-02T14:00:00",
+            end: "2023-06-15T14:00:00",
         },
         {
             id: '2',

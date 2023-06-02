@@ -184,14 +184,36 @@
             return aDate - bDate;
         });
 
-        const nearestEvent = sortedEvents.find((e) => {
-            const eventDate = new Date(e.start);
-            return eventDate > now;
-        });
+        // const nearestEvent = sortedEvents.find((e) => {
+        //     const eventDate = new Date(e.start);
+        //     return eventDate > now
+        // });
 
-        // if no event is found, return the last event
+        let nearestEvent = null;
+
+        for (let i = 0; i < sortedEvents.length; i++) {
+            const eventDate = new Date(sortedEvents[i].start);
+            if (eventDate > now) {
+                nearestEvent = sortedEvents[i];
+                break;
+            }
+            // if event is in the past compared to now but the span of the event is still ongoing return the event
+            if (eventDate < now) {
+                const eventEndDate = new Date(sortedEvents[i].end);
+                if (eventEndDate > now) {
+                    nearestEvent = sortedEvents[i];
+                    break;
+                }
+            }
+        }
+
+        // if no event is found return empty event
         if (!nearestEvent) {
-            return sortedEvents[sortedEvents.length - 1];
+            return {
+                title: "ingen",
+                start: "1970-01-01T00:00:00.000Z",
+                end: "1970-01-01T00:00:00.000Z",
+            };
         }
 
         return nearestEvent;
@@ -210,12 +232,20 @@
         const hours = Math.floor(diff / 1000 / 60 / 60);
         const minutes = Math.floor((diff / 1000 / 60 / 60 - hours) * 60);
 
-        // if the event is happening now return that the event is happening now
-        if (hours === 0 && minutes === 0) {
-            return "Nu";
+        // if the time of now is between the start and end of the event, return "nu"
+        if (
+            now > new Date(nearestEvent.start) &&
+            now < new Date(nearestEvent.end)
+        ) {
+            return "er i gang nu";
         }
 
-        return `${hours} timer og ${minutes} minutter`;
+        // if no event is found in the future return the last event
+        if (new Date(nearestEvent.end) < now) {
+            return "Ikke flere reservationer";
+        }
+
+        return `om ${hours} timer og ${minutes} minutter`;
     }
 
     $: timeUntilNextEvent = getTimeUntilNextEvent();
@@ -378,28 +408,29 @@
                     </span>
                     {nearestEvent?.title}
                     <span class="text-[16px] text-gray-700 flex"
-                        >om {timeUntilNextEvent}</span
+                        >{timeUntilNextEvent}</span
                     >
                 </h3>
-
-                <div class="flex text-gray-600 space-x-2 text-sm">
-                    <div class="space-y-0 w-1/2">
-                        <p>Fra</p>
-                        <p
-                            class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg border border-gray-300"
-                        >
-                            {parseAndFormatDate(nearestEvent?.start)}
-                        </p>
+                {#if nearestEvent?.start !== "1970-01-01T00:00:00.000Z" && nearestEvent?.end !== "1970-01-01T00:00:00.000Z"}
+                    <div class="flex text-gray-600 space-x-2 text-sm">
+                        <div class="space-y-0 w-1/2">
+                            <p>Fra</p>
+                            <p
+                                class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg border border-gray-300"
+                            >
+                                {parseAndFormatDate(nearestEvent?.start)}
+                            </p>
+                        </div>
+                        <div class="space-y-0 w-1/2">
+                            <p>Til</p>
+                            <p
+                                class="bg-gray-100 px-4 text-gray-800 py-2 rounded-lg border border-gray-300"
+                            >
+                                {parseAndFormatDate(nearestEvent?.end)}
+                            </p>
+                        </div>
                     </div>
-                    <div class="space-y-0 w-1/2">
-                        <p>Til</p>
-                        <p
-                            class="bg-gray-100 px-4 text-gray-800 py-2 rounded-lg border border-gray-300"
-                        >
-                            {parseAndFormatDate(nearestEvent?.end)}
-                        </p>
-                    </div>
-                </div>
+                {/if}
             </div>
             <div
                 class="bg-gray-50 p-4 rounded-lg shadow border-gray-300 border"

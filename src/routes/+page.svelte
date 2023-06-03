@@ -7,15 +7,30 @@
     import DayGrid from "@event-calendar/day-grid";
     import DatePicker from "../components/DatePicker/DatePicker.svelte";
     import DateInput from "../components/DatePicker/DateInput.svelte";
+    import { onMount } from "svelte";
 
-    export let data = {
-        data: [],
-    };
+    export let data;
+
+    let events = data.data;
+
+    // async function fetchData() {
+    //     try {
+    //         const response = await fetch("/airtable");
+    //         const data = await response.json();
+    //         events = data.data;
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // }
+
+    // onMount(async () => {
+    //     events = await fetchData();
+    //     events = events;
+    //     console.log("events", events);
+    // });
 
     let fromDate = null;
     let toDate = null;
-
-    let events = data.data || [];
 
     // let plugins = [TimeGrid, Interaction];
     $: plugins = [DayGrid];
@@ -118,7 +133,63 @@
     let starttidspunkt = "12:00";
     let endetidspunkt = "12:00";
 
-    function addEvent() {
+    // function addEvent() {
+    //     const start = combineDateAndTime(fromDate, starttidspunkt);
+    //     const end = combineDateAndTime(toDate, endetidspunkt);
+
+    //     if (start > end) {
+    //         alert("Starttidspunkt skal være før sluttidspunkt");
+    //         return;
+    //     }
+
+    //     // check if event is already in calendar
+    //     const eventExists = events.find((e) => {
+    //         const eventStart = new Date(e.start);
+    //         const eventEnd = new Date(e.end);
+    //         return (
+    //             eventStart.getTime() === start.getTime() &&
+    //             eventEnd.getTime() === end.getTime()
+    //         );
+    //     });
+
+    //     if (eventExists) {
+    //         alert("Denne tid er allerede reserveret");
+    //         return;
+    //     }
+
+    //     // check if time is already reserved
+    //     const eventExistsInTime = events.find((e) => {
+    //         const eventStart = new Date(e.start);
+    //         const eventEnd = new Date(e.end);
+    //         return (
+    //             (start >= eventStart && start <= eventEnd) ||
+    //             (end >= eventStart && end <= eventEnd)
+    //         );
+    //     });
+
+    //     if (eventExistsInTime) {
+    //         alert("Denne tid er allerede reserveret");
+    //         return;
+    //     }
+
+    //     const event = {
+    //         id: events.length + 1 + "",
+    //         title: title,
+    //         start: start,
+    //         end: end,
+    //     };
+
+    //     console.log("events", events);
+
+    //     events = [...events, event];
+    //     options.events = events;
+
+    //     console.log("events", events);
+
+    //     clearFields();
+    // }
+
+    async function add() {
         const start = combineDateAndTime(fromDate, starttidspunkt);
         const end = combineDateAndTime(toDate, endetidspunkt);
 
@@ -148,12 +219,35 @@
             const eventEnd = new Date(e.end);
             return (
                 (start >= eventStart && start <= eventEnd) ||
-                (end >= eventStart && end <= eventEnd)
+                (end >= eventStart && end <= eventEnd) ||
+                (start <= eventStart && end >= eventEnd) ||
+                (start >= eventStart && end <= eventEnd)
             );
         });
 
         if (eventExistsInTime) {
             alert("Denne tid er allerede reserveret");
+            return;
+        }
+
+        let body = {
+            apartment: title,
+            start: start,
+            end: end,
+        };
+
+        const response = await fetch("/airtable", {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify(body),
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            alert(data.error);
             return;
         }
 
@@ -381,7 +475,7 @@
                     <button
                         class="bg-sky-600 mt-6 text-white py-2 px-2 lg:w-1/3 rounded-lg w-full mx-auto shadow border border-gray-200"
                         type="submit"
-                        on:click={addEvent}>Lav reservation</button
+                        on:click={add}>Lav reservation</button
                     >
                 </div>
             {:else}

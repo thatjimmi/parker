@@ -13,21 +13,7 @@
 
     let events = data.data;
 
-    // async function fetchData() {
-    //     try {
-    //         const response = await fetch("/airtable");
-    //         const data = await response.json();
-    //         events = data.data;
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // }
-
-    // onMount(async () => {
-    //     events = await fetchData();
-    //     events = events;
-    //     console.log("events", events);
-    // });
+    console.log("events", events);
 
     let fromDate = null;
     let toDate = null;
@@ -101,6 +87,7 @@
             day: "numeric",
             hour: "numeric",
             minute: "numeric",
+            timeZone: "GMT",
         };
 
         const formatter = new Intl.DateTimeFormat("da-DK", options);
@@ -132,62 +119,6 @@
     let title = "";
     let starttidspunkt = "12:00";
     let endetidspunkt = "12:00";
-
-    // function addEvent() {
-    //     const start = combineDateAndTime(fromDate, starttidspunkt);
-    //     const end = combineDateAndTime(toDate, endetidspunkt);
-
-    //     if (start > end) {
-    //         alert("Starttidspunkt skal være før sluttidspunkt");
-    //         return;
-    //     }
-
-    //     // check if event is already in calendar
-    //     const eventExists = events.find((e) => {
-    //         const eventStart = new Date(e.start);
-    //         const eventEnd = new Date(e.end);
-    //         return (
-    //             eventStart.getTime() === start.getTime() &&
-    //             eventEnd.getTime() === end.getTime()
-    //         );
-    //     });
-
-    //     if (eventExists) {
-    //         alert("Denne tid er allerede reserveret");
-    //         return;
-    //     }
-
-    //     // check if time is already reserved
-    //     const eventExistsInTime = events.find((e) => {
-    //         const eventStart = new Date(e.start);
-    //         const eventEnd = new Date(e.end);
-    //         return (
-    //             (start >= eventStart && start <= eventEnd) ||
-    //             (end >= eventStart && end <= eventEnd)
-    //         );
-    //     });
-
-    //     if (eventExistsInTime) {
-    //         alert("Denne tid er allerede reserveret");
-    //         return;
-    //     }
-
-    //     const event = {
-    //         id: events.length + 1 + "",
-    //         title: title,
-    //         start: start,
-    //         end: end,
-    //     };
-
-    //     console.log("events", events);
-
-    //     events = [...events, event];
-    //     options.events = events;
-
-    //     console.log("events", events);
-
-    //     clearFields();
-    // }
 
     async function add() {
         const start = combineDateAndTime(fromDate, starttidspunkt);

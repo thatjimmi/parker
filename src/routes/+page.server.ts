@@ -19,8 +19,8 @@ export const load = async ({ fetch, params }) => {
             events.push({
               id: record.id,
               title: record.get('apartment'),
-              start: record.get('start'),
-              end: record.get('end')
+              start: new Date(record.get('start')),
+              end: new Date(record.get('end'))
             });
           });
 

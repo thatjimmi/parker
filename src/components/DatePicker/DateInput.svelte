@@ -117,7 +117,7 @@
     }
 
     const formatter = new Intl.DateTimeFormat('da-DK', options)
-    console.log(formatter.format(date))
+
     const formattedDate = formatter.format(date)
 
     const replace = formattedDate.replace(/\//g, '-')

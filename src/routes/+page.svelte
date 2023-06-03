@@ -60,6 +60,7 @@
             day: "Dag",
             list: "Liste",
         },
+
         // height: "40%",
         // slotMinTime: "08:00:00",
         // slotMaxTime: "20:00:00",
@@ -87,7 +88,6 @@
             day: "numeric",
             hour: "numeric",
             minute: "numeric",
-            timeZone: "GMT",
         };
 
         const formatter = new Intl.DateTimeFormat("da-DK", options);

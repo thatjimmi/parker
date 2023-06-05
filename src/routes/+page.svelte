@@ -21,8 +21,6 @@
             options.events = events;
             nearestEvent = getNearestEvent();
             timeUntilNextEvent = getTimeUntilNextEvent();
-
-            console.log("events", events);
         }, 60_000);
 
         return () => {
@@ -212,6 +210,10 @@
 
         events = [...events, event];
         options.events = events;
+
+        nearestEvent = getNearestEvent();
+
+        timeUntilNextEvent = getTimeUntilNextEvent();
 
         clearFields();
     }

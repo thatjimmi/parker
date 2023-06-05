@@ -527,3 +527,23 @@
         </div>
     {/if}
 </div>
+
+<button
+    on:click={() =>
+        Notification.requestPermission().then((perm) => {
+            if (perm === "granted") {
+                const notification = new Notification(
+                    "Notifikation fra Parker",
+                    {
+                        body: "Test notifikation",
+                        icon: "/android-chrome-512x512.png",
+                    }
+                );
+                notification.onclick = (e) => {
+                    console.log(e);
+                };
+            }
+        })}
+>
+    Perimission
+</button>

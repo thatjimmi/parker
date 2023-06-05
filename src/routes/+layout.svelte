@@ -21,7 +21,7 @@
     async
     src="https://www.googletagmanager.com/gtag/js?id=G-7SYZV40WPN"
   ></script> -->
-
+  <link rel="manifest" href="/manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link

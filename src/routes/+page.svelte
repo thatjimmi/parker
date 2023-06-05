@@ -8,12 +8,27 @@
     import DatePicker from "../components/DatePicker/DatePicker.svelte";
     import DateInput from "../components/DatePicker/DateInput.svelte";
     import { onMount } from "svelte";
+    import { invalidate } from "$app/navigation";
 
     export let data;
 
     let events = data.data;
 
-    console.log("events", events);
+    onMount(() => {
+        const interval = setInterval(() => {
+            invalidate("/api/airtable");
+            events = data.data;
+            options.events = events;
+            nearestEvent = getNearestEvent();
+            timeUntilNextEvent = getTimeUntilNextEvent();
+
+            console.log("events", events);
+        }, 60_000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    });
 
     let fromDate = null;
     let toDate = null;
@@ -124,6 +139,12 @@
         const start = combineDateAndTime(fromDate, starttidspunkt);
         const end = combineDateAndTime(toDate, endetidspunkt);
 
+        // check if start and end is the same
+        if (start.getTime() === end.getTime()) {
+            alert("Starttidspunkt og sluttidspunkt kan ikke være det samme");
+            return;
+        }
+
         if (start > end) {
             alert("Starttidspunkt skal være før sluttidspunkt");
             return;
@@ -167,7 +188,7 @@
             end: end,
         };
 
-        const response = await fetch("/airtable", {
+        const response = await fetch("api/airtable", {
             method: "POST",
             headers: {
                 "content-type": "application/json",

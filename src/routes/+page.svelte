@@ -208,7 +208,10 @@
             end: end,
         };
 
+        invalidate("/api/airtable");
+
         events = [...events, event];
+
         options.events = events;
 
         nearestEvent = getNearestEvent();

@@ -308,7 +308,8 @@
     Reservation af parkeringsplads
 </h3> -->
 <div
-    class="h-screen rounded-3xl rounded-b bg-cover max-w-12xl mx-4 mt-4"
+    class="h-screen rounded-3xl rounded-b bg-cover max-w-12xl mx-4 mt-4
+"
     style="background-image: url();"
 >
     <div class="flex flex-col justify-center max-w-12xl mx-auto text-[#16182F]">
@@ -334,7 +335,7 @@
         </div>
         {#if !showCalendar}
             <div
-                class="pb-8 md:pt-8 px-8 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto m-4 rounded-xl"
+                class="pb-8 md:pt-8 px-8 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto rounded-xl"
             >
                 <div class="lg:flex space-x-4 hidden">
                     <div
@@ -466,7 +467,7 @@
         {/if}
         {#if showCalendar}
             <div
-                class="pb-6 md:pt-4 md:mt-4 px-8 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto rounded-xl mb-4"
+                class="pb-6 md:pt-4 px-8 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto rounded-xl mb-4"
             >
                 <div
                     class="mt-4 bg-slate-900 bg-opacity-80 shadow mx-auto px-4 mb-4 pb-4 pt-3 rounded-xl border border-slate-700"

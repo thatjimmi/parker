@@ -528,7 +528,7 @@
     {/if}
 </div>
 
-<button
+<!-- <button
     on:click={() =>
         Notification.requestPermission().then((perm) => {
             if (perm === "granted") {
@@ -546,4 +546,4 @@
         })}
 >
     Perimission
-</button>
+</button> -->

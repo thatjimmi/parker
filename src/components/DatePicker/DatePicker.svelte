@@ -309,7 +309,7 @@
 <style>
   .date-time-picker {
     display: inline-block;
-    color: var(--date-picker-foreground, #000000);
+    /* color: var(--date-picker-foreground, #000000); */
     user-select: none;
     -webkit-user-select: none;
     cursor: default;

@@ -15,14 +15,21 @@
 
   let events = data.data;
 
-  onMount(() => {
-    const interval = setInterval(() => {
-      invalidate("/api/airtable");
-      events = data.data;
+  async function fetchEvents() {
+    // Fetch new event data
+    const response = await fetch("/api/airtable");
+    if (response.ok) {
+      const newData = await response.json();
+      // Update the events array
+      events = newData.data;
       options.events = events;
       nearestEvent = getNearestEvent();
       timeUntilNextEvent = getTimeUntilNextEvent();
-    }, 60_000);
+    }
+  }
+
+  onMount(() => {
+    const interval = setInterval(fetchEvents, 60_000);
 
     return () => {
       clearInterval(interval);

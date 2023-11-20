@@ -11,9 +11,7 @@
   import { onMount } from "svelte";
   import { invalidate } from "$app/navigation";
 
-  export let data;
-
-  let events = data.data;
+  let events = [];
 
   async function fetchEvents() {
     // Fetch new event data
@@ -21,19 +19,15 @@
     if (response.ok) {
       const newData = await response.json();
       // Update the events array
-      events = newData.data;
+      events = newData;
       options.events = events;
-      nearestEvent = getNearestEvent();
+      nearestEvents = getNearestEvents();
       timeUntilNextEvent = getTimeUntilNextEvent();
     }
   }
 
-  onMount(() => {
-    const interval = setInterval(fetchEvents, 60_000);
-
-    return () => {
-      clearInterval(interval);
-    };
+  onMount(async () => {
+    await fetchEvents();
   });
 
   let fromDate = null;
@@ -171,20 +165,22 @@
       return;
     }
 
-    // check if time is already reserved
-    const eventExistsInTime = events.find((e) => {
+    let overlappingEventsCount = 0;
+    events.forEach((e) => {
       const eventStart = new Date(e.start);
       const eventEnd = new Date(e.end);
-      return (
+      if (
         (start >= eventStart && start <= eventEnd) ||
         (end >= eventStart && end <= eventEnd) ||
         (start <= eventStart && end >= eventEnd) ||
         (start >= eventStart && end <= eventEnd)
-      );
+      ) {
+        overlappingEventsCount++;
+      }
     });
 
-    if (eventExistsInTime) {
-      alert("Denne tid er allerede reserveret");
+    if (overlappingEventsCount >= 2) {
+      alert("Denne tid har allerede to reservationer");
       return;
     }
 
@@ -222,7 +218,7 @@
 
     options.events = events;
 
-    nearestEvent = getNearestEvent();
+    nearestEvents = getNearestEvents();
 
     timeUntilNextEvent = getTimeUntilNextEvent();
 
@@ -278,7 +274,52 @@
     return nearestEvent;
   }
 
+  function getNearestEvents() {
+    const now = new Date();
+    const sortedEvents = events.sort(
+      (a, b) => new Date(a.start) - new Date(b.start)
+    );
+
+    let nearestEvents = sortedEvents.filter((event) => {
+      const eventStart = new Date(event.start);
+      return eventStart > now;
+    });
+
+    // Limit to the first two upcoming events
+    return nearestEvents.slice(0, 2);
+  }
+
   $: nearestEvent = getNearestEvent();
+  $: nearestEvents = getNearestEvents();
+
+  function getTimeUntilEvent(eventTime) {
+    const now = new Date();
+    const eventDate = new Date(eventTime);
+
+    if (!eventTime || isNaN(eventDate.getTime())) {
+      return "Invalid event time";
+    }
+
+    const diff = eventDate.getTime() - now.getTime(); // Convert to timestamps
+
+    if (diff < 0) {
+      // If the event time is in the past
+      return "Event has passed";
+    }
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    // If the event is currently ongoing
+    if (
+      now.getTime() > eventDate.getTime() &&
+      now.getTime() < eventDate.setHours(eventDate.getHours() + 2).getTime() // Convert to timestamps
+    ) {
+      return "Event is ongoing";
+    }
+
+    return `Time until event: ${hours} hours and ${minutes} minutes`;
+  }
 
   // function that returns the time until the next event
   function getTimeUntilNextEvent() {
@@ -457,14 +498,7 @@
       <div
         class="mt-4 bg-gray-50 shadow mx-auto px-4 mb-4 pb-4 pt-3 rounded-lg border border-gray-300"
       >
-        <h3 class="text-lg md:text-xl">
-          <span class="text-gray-800">Næste reservering er foretaget af </span>
-          {nearestEvent?.title}
-          <span class="text-[16px] text-gray-700 flex"
-            >{timeUntilNextEvent}</span
-          >
-        </h3>
-        {#if nearestEvent?.start !== "1970-01-01T00:00:00.000Z" && nearestEvent?.end !== "1970-01-01T00:00:00.000Z"}
+        <!-- {#if nearestEvent?.start !== "1970-01-01T00:00:00.000Z" && nearestEvent?.end !== "1970-01-01T00:00:00.000Z"}
           <div class="flex text-gray-600 space-x-2 text-sm">
             <div class="space-y-0 w-1/2">
               <p>Fra</p>
@@ -482,6 +516,30 @@
                 {parseAndFormatDate(nearestEvent?.end)}
               </p>
             </div>
+          </div>
+        {/if} -->
+        {#if nearestEvents && nearestEvents.length > 0}
+          <div>
+            {#each nearestEvents as event}
+              <h3 class="text-lg md:text-xl">
+                <span class="text-gray-800"
+                  >De næste reserveringer er foretaget af
+                </span>
+                {event?.title}
+                <span class="text-[16px] text-gray-700 flex">
+                  {getTimeUntilEvent(event.start)}
+                </span>
+              </h3>
+              <div class="event-details">
+                <h3>{event.title}</h3>
+                <p>Fra: {parseAndFormatDate(event.start)}</p>
+                <p>Til: {parseAndFormatDate(event.end)}</p>
+              </div>
+            {/each}
+          </div>
+        {:else}
+          <div>
+            <p>Ingen kommende reservationer</p>
           </div>
         {/if}
       </div>

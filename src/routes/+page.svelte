@@ -301,6 +301,7 @@
 
   function getNearestEvents() {
     const now = new Date();
+
     // @ts-ignore
     const sortedEvents = events.sort(
       // @ts-ignore
@@ -309,10 +310,11 @@
 
     let nearestEvents = sortedEvents.filter((event) => {
       const eventStart = new Date(event.start);
-      return eventStart > now;
+      const eventEnd = new Date(event.end);
+      return eventStart > now || (eventStart <= now && eventEnd > now);
     });
 
-    // Limit to the first two upcoming events
+    // Limit to the first two upcoming or ongoing events
     return nearestEvents.slice(0, 2);
   }
 
@@ -321,34 +323,35 @@
   $: nearestEvents = getNearestEvents();
 
   // @ts-ignore
-  function getTimeUntilEvent(eventTime) {
+  function getTimeUntilEvent(eventTime, eventEndTime) {
     const now = new Date();
-    const eventDate = new Date(eventTime);
+    const eventStartDate = new Date(eventTime);
+    const eventEndDate = new Date(eventEndTime);
 
-    if (!eventTime || isNaN(eventDate.getTime())) {
-      return "Invalid event time";
+    if (!eventTime || isNaN(eventStartDate.getTime())) {
+      return "Ugyldigt starttidspunkt for begivenheden";
     }
 
-    const diff = eventDate.getTime() - now.getTime(); // Convert to timestamps
-
-    if (diff < 0) {
-      // If the event time is in the past
-      return "Event has passed";
+    if (!eventEndTime || isNaN(eventEndDate.getTime())) {
+      return "Ugyldigt sluttidspunkt for begivenheden";
     }
 
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-    // If the event is currently ongoing
-    if (
-      now.getTime() > eventDate.getTime() &&
-      // @ts-ignore
-      now.getTime() < eventDate.setHours(eventDate.getHours() + 2).getTime() // Convert to timestamps
+    if (now.getTime() > eventEndDate.getTime()) {
+      // Hvis begivenhedens sluttidspunkt er i fortiden
+      return "Begivenheden er forbi";
+    } else if (
+      now.getTime() >= eventStartDate.getTime() &&
+      now.getTime() <= eventEndDate.getTime()
     ) {
-      return "Event is ongoing";
+      // Hvis begivenheden er i gang
+      return "Reservation er i gang";
+    } else {
+      // Hvis begivenheden er i fremtiden
+      const diff = eventStartDate.getTime() - now.getTime();
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      return `Tid til reservation: ${hours} timer og ${minutes} minutter`;
     }
-
-    return `Time until event: ${hours} hours and ${minutes} minutes`;
   }
 
   // function that returns the time until the next event
@@ -388,63 +391,66 @@
     Reservation af parkeringsplads
 </h3> -->
 <div
-  class="flex flex-col px-4 justify-center max-w-12xl mx-auto text-[#16182F]"
+  class="flex flex-col px-4 justify-center bg-[#F7F7F7] max-w-12xl mx-auto text-[#16182F]"
 >
   <!-- switch toggle for switching between calendar and booking a spot -->
-  <div class="flex pt-4 space-x-2 justify-center">
-    <button
-      class="{showCalendar
-        ? 'bg-gray-100 border-gray-400 '
-        : ''} border px-3 py-1 rounded"
-      on:click={toggleSwitch}
-    >
-      <span class="text-sm">Kalender</span>
-    </button>
+  <div class="flex pt-4 justify-center">
+    <div class="border rounded-3xl overflow-hidden">
+      <button
+        class="{showCalendar ? 'bg-white  ' : ''}  px-3 pl-4 py-1"
+        on:click={toggleSwitch}
+      >
+        <span class="text-sm">Kalender</span>
+      </button>
 
-    <button
-      class="{!showCalendar
-        ? 'bg-gray-100 border-gray-400'
-        : ''} border px-3 py-1 rounded"
-      on:click={toggleSwitch}
-    >
-      <span class="text-sm">Reserver</span>
-    </button>
+      <button
+        class="{!showCalendar ? 'bg-white ' : ''}  px-3 pr-4 py-1"
+        on:click={toggleSwitch}
+      >
+        <span class="text-sm">Reserver</span>
+      </button>
+    </div>
   </div>
   {#if !showCalendar}
     <div
       class="pb-8 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto m-4 rounded-xl"
     >
+      <h3 class="text-lg md:text-xl mb-2">
+        <span class="text-gray-800">Lav reservation</span>
+      </h3>
       <div class="lg:flex space-x-4 hidden">
-        <div class="w-1/2 border pt-6 pb-4 px-4 rounded-xl bg-slate-50">
+        <div class="w-1/2 border pt-6 pb-4 px-4 rounded-xl bg-white">
           <DatePicker bind:value={fromDate} />
         </div>
-        <div class="w-1/2 border pt-6 pb-4 px-4 rounded-xl bg-slate-50">
+        <div class="w-1/2 border pt-6 pb-4 px-4 rounded-xl bg-white">
           <DatePicker bind:value={toDate} />
         </div>
       </div>
       <div class="flex flex-col lg:hidden">
-        <div class="mx-auto space-y-1 w-full">
+        <div class="mx-auto space-y-1 w-full rounded-xl bg-white p-4 border">
           <p>Fra</p>
           <DateInput
             bind:value={fromDate}
-            styling="text-lg text-center w-full text-gray-800 bg-slate-50"
+            styling="text-md text-center w-full text-gray-800 bg-slate-50"
           />
           <p>Til</p>
           <DateInput
             bind:value={toDate}
-            styling="text-lg w-full text-gray-800 text-center bg-slate-50"
+            styling="text-md w-full text-gray-800 text-center bg-slate-50"
           />
         </div>
       </div>
 
       <div class="lg:flex pt-4 lg:space-x-4 space-y-2 lg:space-y-0">
-        <div class="flex flex-col space-y-4 lg:w-1/2 mx-auto">
+        <div
+          class="flex flex-col space-y-4 lg:w-1/2 mx-auto bg-white p-4 rounded-xl border"
+        >
           <div class="flex space-x-2">
             <div class="flex flex-col w-full space-y-2">
               <label for="start">Starttidspunkt</label>
               <input
                 type="time"
-                class="px-4 bg-gray-100 pt-2 pb-1.5 w-full rounded-lg border border-gray-300"
+                class="px-4 bg-slate-50 pt-2 pb-1.5 w-full rounded-lg border"
                 id="start"
                 name="start"
                 placeholder="00:00"
@@ -456,7 +462,7 @@
               <label for="end">Sluttidspunkt</label>
               <input
                 type="time"
-                class="px-4 bg-gray-100 pt-2 pb-1.5 w-full rounded-lg border border-gray-300"
+                class="px-4 bg-slate-50 pt-2 pb-1.5 w-full rounded-lg border"
                 id="end"
                 name="end"
                 placeholder="00:00"
@@ -466,23 +472,28 @@
             </div>
           </div>
           <div class="flex flex-col space-y-2">
-            <label for="title">Lejlighed</label>
+            <label for="title">
+              Hvem reserverer? <span class="text-gray-500"
+                >(navn, lejlighed, evt. bil)</span
+              >
+            </label>
             <input
-              class="bg-gray-100 px-4 py-2 text-gray-800 rounded-lg border border-gray-300"
+              class="bg-slate-50 px-4 py-2 text-gray-800 rounded-lg border"
               type="text"
               id="title"
+              placeholder="Navn, lejlighed, evt. bil"
               name="title"
               bind:value={title}
             />
           </div>
         </div>
         {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
-          <div class="rounded-lg text-gray-900 lg:w-1/2 space-y-4">
+          <div
+            class=" text-gray-900 lg:w-1/2 space-y-4 bg-white p-4 rounded-xl border"
+          >
             <div class="space-y-2">
               <p>Valgt fra</p>
-              <p
-                class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-300"
-              >
+              <p class="bg-slate-50 px-4 py-2 rounded-lg border">
                 {parseAndFormatDate(
                   combineDateAndTime(fromDate, starttidspunkt)
                 )}
@@ -490,9 +501,7 @@
             </div>
             <div class="space-y-2">
               <p>Til</p>
-              <p
-                class="bg-gray-100 px-4 py-2 rounded-lg border border-gray-300"
-              >
+              <p class="bg-slate-50 px-4 py-2 rounded-lg border">
                 {parseAndFormatDate(combineDateAndTime(toDate, endetidspunkt))}
               </p>
             </div>
@@ -504,7 +513,7 @@
       {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
         <div class="text-center">
           <button
-            class="bg-sky-600 mt-6 text-white py-2 px-2 lg:w-1/3 rounded-lg w-full mx-auto shadow border border-gray-200"
+            class="bg-[#111727] mt-6 text-white py-2 px-2 lg:w-1/3 rounded-lg w-full mx-auto border"
             type="submit"
             on:click={add}>Lav reservation</button
           >
@@ -512,7 +521,7 @@
       {:else}
         <div class="text-center">
           <p
-            class="bg-gray-300 mt-6 text-gray-500 py-2 px-2 lg:w-1/3 w-full rounded-lg mx-auto shadow border border-gray-300"
+            class="bg-gray-300 mt-6 text-gray-500 py-2 px-2 lg:w-1/3 w-full rounded-lg mx-auto border"
           >
             Lav reservation
           </p>
@@ -525,41 +534,27 @@
       class="pb-6 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto rounded-xl mb-4"
     >
       <div class="mt-4 mx-auto mb-4">
-        <!-- {#if nearestEvent?.start !== "1970-01-01T00:00:00.000Z" && nearestEvent?.end !== "1970-01-01T00:00:00.000Z"}
-          <div class="flex text-gray-600 space-x-2 text-sm">
-            <div class="space-y-0 w-1/2">
-              <p>Fra</p>
-              <p
-                class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg border border-gray-300"
-              >
-                {parseAndFormatDate(nearestEvent?.start)}
-              </p>
-            </div>
-            <div class="space-y-0 w-1/2">
-              <p>Til</p>
-              <p
-                class="bg-gray-100 px-4 text-gray-800 py-2 rounded-lg border border-gray-300"
-              >
-                {parseAndFormatDate(nearestEvent?.end)}
-              </p>
-            </div>
-          </div>
-        {/if} -->
         <h3 class="text-lg md:text-xl mb-2">
-          <span class="text-gray-800">Næste reserveringer </span>
+          <span class="text-gray-800">Kommende reserveringer </span>
         </h3>
         {#if nearestEvents && nearestEvents.length > 0}
           <div class="grid md:grid-cols-2 gap-4">
             {#each nearestEvents as event}
-              <div class="bg-slate-50 rounded-2xl p-4 border">
+              <div class="bg-white rounded-2xl p-4 border">
                 <h4 class="md:text-lg">{event.title}</h4>
                 <span class="text-[16px] text-gray-700 flex">
-                  {getTimeUntilEvent(event.start)}
+                  {getTimeUntilEvent(event.start, event.end)}
                 </span>
 
                 <div class="event-details">
-                  <p>Fra: {parseAndFormatDate(event.start)}</p>
-                  <p>Til: {parseAndFormatDate(event.end)}</p>
+                  <p class="">
+                    <span class="text-gray-500">Fra</span>
+                    {parseAndFormatDate(event.start)}
+                  </p>
+                  <p class="">
+                    <span class="text-gray-500">Til</span>
+                    {parseAndFormatDate(event.end)}
+                  </p>
                 </div>
               </div>
             {/each}
@@ -574,31 +569,25 @@
         {#key plugins}
           <button
             on:click={() => setOptionsPlugins()}
-            class="text-gray-600 border py-1 px-2 rounded border-gray-300 text-sm mb-2"
+            class="text-gray-700 bg-white border py-1 px-2 rounded-lg text-sm mb-2"
             >Skift kalendervisning</button
           >
           <Calendar {plugins} {options} />
         {/key}
       </div>
       {#if chosenEvent && chosenEvent.id}
-        <div
-          class="mt-4 bg-gray-50 shadow mx-auto px-4 pb-4 py-3 rounded-lg border border-gray-300"
-        >
+        <div class="mt-4 bg-white mx-auto px-4 pb-4 py-3 rounded-xl border">
           <h3 class="text-xl">{chosenEvent?.title}</h3>
           <div class="flex text-gray-600 space-x-2 text-sm">
             <div class="space-y-0 w-1/2">
               <p>Fra</p>
-              <p
-                class="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg border border-gray-300"
-              >
+              <p class="bg-slate-50 text-gray-800 px-4 py-2 rounded-lg border">
                 {parseAndFormatDate(chosenEvent.start)}
               </p>
             </div>
             <div class="space-y-0 w-1/2">
               <p>Til</p>
-              <p
-                class="bg-gray-100 px-4 text-gray-800 py-2 rounded-lg border border-gray-300"
-              >
+              <p class="bg-slate-50 px-4 text-gray-800 py-2 rounded-lg border">
                 {parseAndFormatDate(chosenEvent.end)}
               </p>
             </div>

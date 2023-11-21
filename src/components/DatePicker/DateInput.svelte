@@ -77,7 +77,7 @@
     }
   }
   export let visible = false
-  export let closeOnSelection = false
+  export let closeOnSelection = true
   export let browseWithoutSelecting = false
   function onFocusOut(e) {
     if (

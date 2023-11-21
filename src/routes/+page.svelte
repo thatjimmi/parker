@@ -419,10 +419,16 @@
         <span class="text-gray-800">Lav reservation</span>
       </h3>
       <div class="lg:flex space-x-4 hidden">
-        <div class="w-1/2 border pt-6 pb-4 px-4 rounded-xl bg-white">
+        <div
+          class="flex flex-col w-1/2 border pb-4 px-4 pt-4 rounded-xl bg-white"
+        >
+          <span class="mb-2">Fra </span>
           <DatePicker bind:value={fromDate} />
         </div>
-        <div class="w-1/2 border pt-6 pb-4 px-4 rounded-xl bg-white">
+        <div
+          class="flex flex-col w-1/2 border pb-4 px-4 pt-4 rounded-xl bg-white"
+        >
+          <span class="mb-2">Til </span>
           <DatePicker bind:value={toDate} />
         </div>
       </div>
@@ -480,7 +486,8 @@
               </p>
               <span class="text-sm">
                 Bil kan være nyttigt at oplyse så vi kan skælne mellem om det er
-                vedkommende der har reserveret der holder der eller ej.
+                vedkommende der har reserveret der holder der eller ej. Angiv
+                hvis det er vigtigt hvilken af de to pladser der reserveres.
               </span>
             </label>
 
@@ -512,6 +519,7 @@
                 {parseAndFormatDate(combineDateAndTime(toDate, endetidspunkt))}
               </p>
             </div>
+            <p>Ser det rigtigt ud?</p>
           </div>
         {:else}
           <div class="rounded-lg text-gray-900 text-center lg:w-1/2" />

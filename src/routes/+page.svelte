@@ -15,6 +15,7 @@
   import DateInput from "../components/DatePicker/DateInput.svelte";
   import { onMount } from "svelte";
   import { invalidate } from "$app/navigation";
+  import { error } from "@sveltejs/kit";
 
   // @ts-ignore
   let events = [];
@@ -88,11 +89,37 @@
       day: "Dag",
       list: "Liste",
     },
-
-    // height: "40%",
-    // slotMinTime: "08:00:00",
-    // slotMaxTime: "20:00:00",
   };
+
+  function overlappingTimes() {
+    // @ts-ignore
+    const start = combineDateAndTime(fromDate, starttidspunkt);
+    // @ts-ignore
+    const end = combineDateAndTime(toDate, endetidspunkt);
+
+    console.log("start", start, "end", end);
+
+    let overlappingEventsCount = 0;
+    // @ts-ignore
+    events.forEach((e) => {
+      const eventStart = new Date(e.start);
+      const eventEnd = new Date(e.end);
+      console.log("eventStart", eventStart, "eventEnd", eventEnd);
+      if (
+        (start >= eventStart && start < eventEnd) || // New event starts during an existing event
+        (end > eventStart && end <= eventEnd) || // New event ends during an existing event
+        (start < eventStart && end > eventEnd) // New event completely overlaps an existing event
+      ) {
+        overlappingEventsCount++;
+      }
+    });
+
+    if (overlappingEventsCount >= 2) {
+      return "Denne tid har allerede to reservationer";
+    }
+
+    return "";
+  }
 
   function clearFields() {
     title = "";
@@ -100,6 +127,28 @@
     endetidspunkt = "12:00";
     fromDate = null;
     toDate = null;
+  }
+
+  function getTimeBetween() {
+    // @ts-ignore
+    const start = combineDateAndTime(fromDate, starttidspunkt);
+    // @ts-ignore
+    const end = combineDateAndTime(toDate, endetidspunkt);
+
+    const diff = end.getTime() - start.getTime();
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    return `${hours} timer og ${minutes} minutter`;
+  }
+
+  let besked = "";
+  let timeBetween = "";
+  $: if (fromDate && toDate && starttidspunkt && endetidspunkt && title) {
+    timeBetween = getTimeBetween();
+    besked = overlappingTimes();
   }
 
   // @ts-ignore
@@ -121,7 +170,9 @@
     };
 
     // @ts-ignore
-    const formatter = new Intl.DateTimeFormat("da-DK", options);
+    const formatter = new Intl.DateTimeFormat("da-DK", options, {
+      timeZone: "Europe/Copenhagen",
+    });
 
     const formattedDate = formatter.format(date);
 
@@ -134,6 +185,12 @@
   function parseAndFormatDate(timeString) {
     const date = new Date(timeString);
     return formatDate(date);
+  }
+
+  function parseAndFormatDate2(timeString) {
+    const date = new Date(timeString);
+    const oneHourLater = date.setHours(date.getHours() + 1);
+    return formatDate(new Date(oneHourLater));
   }
 
   // @ts-ignore
@@ -170,32 +227,15 @@
       return;
     }
 
-    // check if event is already in calendar
-    // @ts-ignore
-    const eventExists = events.find((e) => {
-      const eventStart = new Date(e.start);
-      const eventEnd = new Date(e.end);
-      return (
-        eventStart.getTime() === start.getTime() &&
-        eventEnd.getTime() === end.getTime()
-      );
-    });
-
-    if (eventExists) {
-      alert("Denne tid er allerede reserveret");
-      return;
-    }
-
     let overlappingEventsCount = 0;
     // @ts-ignore
     events.forEach((e) => {
       const eventStart = new Date(e.start);
       const eventEnd = new Date(e.end);
       if (
-        (start >= eventStart && start <= eventEnd) ||
-        (end >= eventStart && end <= eventEnd) ||
-        (start <= eventStart && end >= eventEnd) ||
-        (start >= eventStart && end <= eventEnd)
+        (start >= eventStart && start < eventEnd) || // New event starts during an existing event
+        (end > eventStart && end <= eventEnd) || // New event ends during an existing event
+        (start < eventStart && end > eventEnd) // New event completely overlaps an existing event
       ) {
         overlappingEventsCount++;
       }
@@ -242,8 +282,6 @@
     options.events = events;
 
     nearestEvents = getNearestEvents();
-
-    timeUntilNextEvent = getTimeUntilNextEvent();
 
     clearFields();
   }
@@ -460,7 +498,6 @@
                 id="start"
                 name="start"
                 placeholder="00:00"
-                step="3600"
                 bind:value={starttidspunkt}
               />
             </div>
@@ -472,7 +509,6 @@
                 id="end"
                 name="end"
                 placeholder="00:00"
-                step="3600"
                 bind:value={endetidspunkt}
               />
             </div>
@@ -519,6 +555,9 @@
                 {parseAndFormatDate(combineDateAndTime(toDate, endetidspunkt))}
               </p>
             </div>
+            <p>
+              I alt {timeBetween}
+            </p>
             <p>Ser det rigtigt ud?</p>
           </div>
         {:else}
@@ -527,6 +566,7 @@
       </div>
       {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
         <div class="text-center">
+          {besked}
           <button
             class="bg-[#111727] mt-6 text-white py-2 px-2 lg:w-1/3 rounded-lg w-full mx-auto border"
             type="submit"
@@ -600,13 +640,13 @@
             <div class="space-y-0 w-1/2">
               <p>Fra</p>
               <p class=" text-gray-800">
-                {parseAndFormatDate(chosenEvent.start)}
+                {parseAndFormatDate2(chosenEvent.start)}
               </p>
             </div>
             <div class="space-y-0 w-1/2">
               <p>Til</p>
               <p class=" text-gray-800">
-                {parseAndFormatDate(chosenEvent.end)}
+                {parseAndFormatDate2(chosenEvent.end)}
               </p>
             </div>
           </div>

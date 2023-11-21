@@ -473,10 +473,17 @@
           </div>
           <div class="flex flex-col space-y-2">
             <label for="title">
-              Hvem reserverer? <span class="text-gray-500"
-                >(navn, lejlighed, evt. bil)</span
-              >
+              <p>
+                Hvem reserverer? <span class="text-gray-500"
+                  >(navn, lejlighed, evt. bil)</span
+                >
+              </p>
+              <span class="text-sm">
+                Bil kan være nyttigt at oplyse så vi kan skælne mellem om det er
+                vedkommende der har reserveret der holder der eller ej.
+              </span>
             </label>
+
             <input
               class="bg-slate-50 px-4 py-2 text-gray-800 rounded-lg border"
               type="text"

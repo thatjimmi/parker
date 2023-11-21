@@ -584,17 +584,20 @@
       </div>
       {#if chosenEvent && chosenEvent.id}
         <div class="mt-4 bg-white mx-auto px-4 pb-4 py-3 rounded-xl border">
-          <h3 class="text-xl">{chosenEvent?.title}</h3>
+          <h3 class="text-xl">
+            <span class="">Reservation af</span>
+            {chosenEvent?.title}
+          </h3>
           <div class="flex text-gray-600 space-x-2 text-sm">
             <div class="space-y-0 w-1/2">
               <p>Fra</p>
-              <p class="bg-slate-50 text-gray-800 px-4 py-2 rounded-lg border">
+              <p class=" text-gray-800">
                 {parseAndFormatDate(chosenEvent.start)}
               </p>
             </div>
             <div class="space-y-0 w-1/2">
               <p>Til</p>
-              <p class="bg-slate-50 px-4 text-gray-800 py-2 rounded-lg border">
+              <p class=" text-gray-800">
                 {parseAndFormatDate(chosenEvent.end)}
               </p>
             </div>

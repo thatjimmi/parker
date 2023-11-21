@@ -1,16 +1,22 @@
 <!-- https://github.com/vkurko/calendar -->
 <script>
   // import Calendar from "../components/@event-calendar/core";
+  // @ts-ignore
   import Calendar from "@event-calendar/core";
+  // @ts-ignore
   import TimeGrid from "@event-calendar/time-grid";
+  // @ts-ignore
   import Interaction from "@event-calendar/interaction";
+  // @ts-ignore
   import List from "@event-calendar/list";
+  // @ts-ignore
   import DayGrid from "@event-calendar/day-grid";
   import DatePicker from "../components/DatePicker/DatePicker.svelte";
   import DateInput from "../components/DatePicker/DateInput.svelte";
   import { onMount } from "svelte";
   import { invalidate } from "$app/navigation";
 
+  // @ts-ignore
   let events = [];
 
   async function fetchEvents() {
@@ -30,7 +36,9 @@
     await fetchEvents();
   });
 
+  // @ts-ignore
   let fromDate = null;
+  // @ts-ignore
   let toDate = null;
 
   // let plugins = [TimeGrid, Interaction];
@@ -54,17 +62,22 @@
   // let plugins = [List];
   let options = {
     // view: "dayGrid",
+    // @ts-ignore
     events: events,
     allDaySlot: false,
+    // @ts-ignore
     dateClick: (e) => {
       console.log("dateClick", e);
     },
+    // @ts-ignore
     eventClick: (e) => {
       chosenEvent = e.event;
     },
+    // @ts-ignore
     eventContent: (e) => {
       return `${e.event.title}`;
     },
+    // @ts-ignore
     noEventsClick: (e) => {
       console.log("noEventClicks", e);
     },
@@ -89,12 +102,14 @@
     toDate = null;
   }
 
+  // @ts-ignore
   function getHoursAndMinutes(date) {
     const hours = date.getHours();
     const minutes = date.getMinutes();
     return `${hours}:${minutes < 10 ? "0" + minutes : minutes}`;
   }
 
+  // @ts-ignore
   function formatDate(date) {
     const options = {
       weekday: "long",
@@ -105,6 +120,7 @@
       minute: "numeric",
     };
 
+    // @ts-ignore
     const formatter = new Intl.DateTimeFormat("da-DK", options);
 
     const formattedDate = formatter.format(date);
@@ -114,11 +130,13 @@
     return replace.charAt(0).toUpperCase() + replace.slice(1);
   }
 
+  // @ts-ignore
   function parseAndFormatDate(timeString) {
     const date = new Date(timeString);
     return formatDate(date);
   }
 
+  // @ts-ignore
   function combineDateAndTime(dateObj, timeString) {
     const [hours, minutes] = timeString.split(":");
     const newDateObj = new Date(dateObj.getTime());
@@ -136,7 +154,9 @@
   let endetidspunkt = "12:00";
 
   async function add() {
+    // @ts-ignore
     const start = combineDateAndTime(fromDate, starttidspunkt);
+    // @ts-ignore
     const end = combineDateAndTime(toDate, endetidspunkt);
 
     // check if start and end is the same
@@ -151,6 +171,7 @@
     }
 
     // check if event is already in calendar
+    // @ts-ignore
     const eventExists = events.find((e) => {
       const eventStart = new Date(e.start);
       const eventEnd = new Date(e.end);
@@ -166,6 +187,7 @@
     }
 
     let overlappingEventsCount = 0;
+    // @ts-ignore
     events.forEach((e) => {
       const eventStart = new Date(e.start);
       const eventEnd = new Date(e.end);
@@ -214,6 +236,7 @@
 
     invalidate("/api/airtable");
 
+    // @ts-ignore
     events = [...events, event];
 
     options.events = events;
@@ -233,9 +256,11 @@
 
   function getNearestEvent() {
     const now = new Date();
+    // @ts-ignore
     const sortedEvents = events.sort((a, b) => {
       const aDate = new Date(a.start);
       const bDate = new Date(b.start);
+      // @ts-ignore
       return aDate - bDate;
     });
 
@@ -276,7 +301,9 @@
 
   function getNearestEvents() {
     const now = new Date();
+    // @ts-ignore
     const sortedEvents = events.sort(
+      // @ts-ignore
       (a, b) => new Date(a.start) - new Date(b.start)
     );
 
@@ -289,9 +316,11 @@
     return nearestEvents.slice(0, 2);
   }
 
+  // @ts-ignore
   $: nearestEvent = getNearestEvent();
   $: nearestEvents = getNearestEvents();
 
+  // @ts-ignore
   function getTimeUntilEvent(eventTime) {
     const now = new Date();
     const eventDate = new Date(eventTime);
@@ -313,6 +342,7 @@
     // If the event is currently ongoing
     if (
       now.getTime() > eventDate.getTime() &&
+      // @ts-ignore
       now.getTime() < eventDate.setHours(eventDate.getHours() + 2).getTime() // Convert to timestamps
     ) {
       return "Event is ongoing";
@@ -327,6 +357,7 @@
     const nearestEvent = getNearestEvent();
 
     const eventDate = new Date(nearestEvent.start);
+    // @ts-ignore
     const diff = eventDate - now;
 
     const hours = Math.floor(diff / 1000 / 60 / 60);
@@ -356,7 +387,9 @@
 >
     Reservation af parkeringsplads
 </h3> -->
-<div class="flex flex-col justify-center max-w-12xl mx-auto text-[#16182F]">
+<div
+  class="flex flex-col px-4 justify-center max-w-12xl mx-auto text-[#16182F]"
+>
   <!-- switch toggle for switching between calendar and booking a spot -->
   <div class="flex pt-4 space-x-2 justify-center">
     <button
@@ -379,17 +412,13 @@
   </div>
   {#if !showCalendar}
     <div
-      class="pb-8 md:pt-8 px-8 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto md:shadow border-gray-300 md:border m-4 rounded-xl"
+      class="pb-8 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto m-4 rounded-xl"
     >
       <div class="lg:flex space-x-4 hidden">
-        <div
-          class="w-1/2 shadow border pt-6 pb-4 px-4 rounded-xl border-gray-300 bg-gray-50"
-        >
+        <div class="w-1/2 border pt-6 pb-4 px-4 rounded-xl bg-slate-50">
           <DatePicker bind:value={fromDate} />
         </div>
-        <div
-          class="w-1/2 border shadow pt-6 pb-4 px-4 rounded-xl border-gray-300 bg-gray-50"
-        >
+        <div class="w-1/2 border pt-6 pb-4 px-4 rounded-xl bg-slate-50">
           <DatePicker bind:value={toDate} />
         </div>
       </div>
@@ -398,12 +427,12 @@
           <p>Fra</p>
           <DateInput
             bind:value={fromDate}
-            styling="text-lg text-center w-full text-gray-800 bg-gray-100"
+            styling="text-lg text-center w-full text-gray-800 bg-slate-50"
           />
           <p>Til</p>
           <DateInput
             bind:value={toDate}
-            styling="text-lg w-full text-gray-800 text-center bg-gray-100"
+            styling="text-lg w-full text-gray-800 text-center bg-slate-50"
           />
         </div>
       </div>
@@ -493,11 +522,9 @@
   {/if}
   {#if showCalendar}
     <div
-      class="pb-6 md:pt-4 md:mt-4 md:border border-gray-300 px-8 md:shadow w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto rounded-xl mb-4"
+      class="pb-6 w-full md:w-4/5 lg:w-4/5 xl:w-3/5 2xl:w-1/2 mx-auto rounded-xl mb-4"
     >
-      <div
-        class="mt-4 bg-gray-50 shadow mx-auto px-4 mb-4 pb-4 pt-3 rounded-lg border border-gray-300"
-      >
+      <div class="mt-4 mx-auto mb-4">
         <!-- {#if nearestEvent?.start !== "1970-01-01T00:00:00.000Z" && nearestEvent?.end !== "1970-01-01T00:00:00.000Z"}
           <div class="flex text-gray-600 space-x-2 text-sm">
             <div class="space-y-0 w-1/2">
@@ -518,22 +545,22 @@
             </div>
           </div>
         {/if} -->
+        <h3 class="text-lg md:text-xl mb-2">
+          <span class="text-gray-800">Næste reserveringer </span>
+        </h3>
         {#if nearestEvents && nearestEvents.length > 0}
-          <div>
+          <div class="grid md:grid-cols-2 gap-4">
             {#each nearestEvents as event}
-              <h3 class="text-lg md:text-xl">
-                <span class="text-gray-800"
-                  >De næste reserveringer er foretaget af
-                </span>
-                {event?.title}
+              <div class="bg-slate-50 rounded-2xl p-4 border">
+                <h4 class="md:text-lg">{event.title}</h4>
                 <span class="text-[16px] text-gray-700 flex">
                   {getTimeUntilEvent(event.start)}
                 </span>
-              </h3>
-              <div class="event-details">
-                <h3>{event.title}</h3>
-                <p>Fra: {parseAndFormatDate(event.start)}</p>
-                <p>Til: {parseAndFormatDate(event.end)}</p>
+
+                <div class="event-details">
+                  <p>Fra: {parseAndFormatDate(event.start)}</p>
+                  <p>Til: {parseAndFormatDate(event.end)}</p>
+                </div>
               </div>
             {/each}
           </div>
@@ -543,7 +570,7 @@
           </div>
         {/if}
       </div>
-      <div class="bg-gray-50 p-4 rounded-lg shadow border-gray-300 border">
+      <div class="">
         {#key plugins}
           <button
             on:click={() => setOptionsPlugins()}

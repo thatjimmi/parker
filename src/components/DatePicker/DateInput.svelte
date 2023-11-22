@@ -28,7 +28,7 @@
   export let value = null
   $: store.set(value)
   export let min = new Date(defaultDate.getFullYear() - 20, 0, 1)
-  export let max = new Date(defaultDate.getFullYear(), 11, 31, 23, 59, 59, 999)
+  export let max = new Date(defaultDate.getFullYear() + 1, 11, 31, 23, 59, 59, 999)
   export let placeholder = '31/05-2023'
   export let valid = true
   export let disabled = false
@@ -167,10 +167,8 @@
   input {
     min-width: 0px;
     box-sizing: border-box;
-    padding: 4px 6px;
     margin: 0px;
     border: 1px solid rgba(103, 113, 137, 0.3);
-    border-radius: 6px;
     outline: none;
     transition: all 80ms cubic-bezier(0.4, 0, 0.2, 1);
   }

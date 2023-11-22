@@ -10,6 +10,13 @@ export const POST = async ({ request }) => {
 
      try {
         const records = await base('Table 1').create(body);
+        
+        const logs = await base('logs').create([{
+            "fields": {
+                "Event": "Created",
+                "Record": records.id,
+            }}])
+            
     } catch (err) {
         return new Response(err.message || err.toString(), {
             status: err.status || 500,
@@ -38,6 +45,7 @@ export const GET = async ({ request }) => {
             .eachPage(
                 function page(records, fetchNextPage) {
                     records.forEach(function (record) {
+                        if (record.get('Status') === 'Deactivated') return; // skip deactivated records
                         events.push({
                             id: record.id,
                             title: record.get('apartment'),
@@ -60,6 +68,69 @@ export const GET = async ({ request }) => {
     });
 
     return new Response(JSON.stringify(events), {
+        headers: {
+            'content-type': 'application/json'
+        }
+    })
+}
+
+export const PUT = async ({ request }) => {
+    const body = await request.json()
+
+    try {
+        const records = await base('Table 1').update([{
+            id: body.id,
+            fields: {
+                apartment: body.title,
+                start: body.start,
+                end: body.end
+            }
+        }]);
+    } catch (err) {
+        return new Response(err.message || err.toString(), {
+            status: err.status || 500,
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
+
+    }
+
+    return new Response(JSON.stringify(body), {
+        headers: {
+            'content-type': 'application/json'
+        }
+    })
+}
+
+export const DELETE = async ({ request }) => {
+    const body = await request.json()
+
+    try {
+        const records = await base('Table 1').update([{
+            id: body.id,
+            fields: {
+                Status: 'Deactivated'
+            }
+        }]);
+            
+        const logs = await base('logs').create([{
+            "fields": {
+                "Event": "Deactivated",
+                "Record": records[0].id,
+            }}])
+
+    } catch (err) {
+        return new Response(err.message || err.toString(), {
+            status: err.status || 500,
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
+
+    }
+
+    return new Response(JSON.stringify(body), {
         headers: {
             'content-type': 'application/json'
         }

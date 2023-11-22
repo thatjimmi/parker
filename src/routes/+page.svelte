@@ -8,6 +8,7 @@
   // @ts-ignore
   import Interaction from "@event-calendar/interaction";
   // @ts-ignore
+  // import List from "../components/@event-calendar/list";
   import List from "@event-calendar/list";
   // @ts-ignore
   import DayGrid from "@event-calendar/day-grid";
@@ -68,7 +69,7 @@
     allDaySlot: false,
     // @ts-ignore
     dateClick: (e) => {
-      console.log("dateClick", e);
+      // console.log("dateClick", e);
     },
     // @ts-ignore
     eventClick: (e) => {
@@ -80,7 +81,7 @@
     },
     // @ts-ignore
     noEventsClick: (e) => {
-      console.log("noEventClicks", e);
+      // console.log("noEventClicks", e);
     },
     buttonText: {
       today: "I dag",
@@ -97,14 +98,12 @@
     // @ts-ignore
     const end = combineDateAndTime(toDate, endetidspunkt);
 
-    console.log("start", start, "end", end);
-
     let overlappingEventsCount = 0;
     // @ts-ignore
     events.forEach((e) => {
       const eventStart = new Date(e.start);
       const eventEnd = new Date(e.end);
-      console.log("eventStart", eventStart, "eventEnd", eventEnd);
+
       if (
         (start >= eventStart && start < eventEnd) || // New event starts during an existing event
         (end > eventStart && end <= eventEnd) || // New event ends during an existing event
@@ -143,6 +142,8 @@
 
     return `${hours} timer og ${minutes} minutter`;
   }
+
+  let opdaterReservation = false;
 
   let besked = "";
   let timeBetween = "";
@@ -267,21 +268,8 @@
       return;
     }
 
-    const event = {
-      id: events.length + 1 + "",
-      title: title,
-      start: start,
-      end: end,
-    };
-
-    invalidate("/api/airtable");
-
-    // @ts-ignore
-    events = [...events, event];
-
-    options.events = events;
-
     nearestEvents = getNearestEvents();
+    fetchEvents();
 
     clearFields();
   }
@@ -376,7 +364,7 @@
 
     if (now.getTime() > eventEndDate.getTime()) {
       // Hvis begivenhedens sluttidspunkt er i fortiden
-      return "Begivenheden er forbi";
+      return "Reservation er forbi";
     } else if (
       now.getTime() >= eventStartDate.getTime() &&
       now.getTime() <= eventEndDate.getTime()
@@ -420,6 +408,60 @@
     return `om ${hours} timer og ${minutes} minutter`;
   }
 
+  async function updateReservation(title, start, end, id) {
+    let body = {
+      id: id,
+      apartment: title,
+      start: start,
+      end: end,
+    };
+
+    const response = await fetch("api/airtable", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
+    invalidate("/api/airtable");
+
+    // @ts-ignore
+    events = [...events, event];
+
+    options.events = events;
+  }
+
+  async function deleteReservation(id) {
+    let body = {
+      id: id,
+    };
+    const response = await fetch("api/airtable", {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
+    chosenEvent = {};
+    fetchEvents();
+  }
+
   $: timeUntilNextEvent = getTimeUntilNextEvent();
 </script>
 
@@ -458,13 +500,13 @@
       </h3>
       <div class="lg:flex space-x-4 hidden">
         <div
-          class="flex flex-col w-1/2 border pb-4 px-4 pt-4 rounded-xl bg-white"
+          class="flex flex-col w-1/2 border pb-4 px-4 pt-4 rounded-2xl bg-white"
         >
           <span class="mb-2">Fra </span>
           <DatePicker bind:value={fromDate} />
         </div>
         <div
-          class="flex flex-col w-1/2 border pb-4 px-4 pt-4 rounded-xl bg-white"
+          class="flex flex-col w-1/2 border pb-4 px-4 pt-4 rounded-2xl bg-white"
         >
           <span class="mb-2">Til </span>
           <DatePicker bind:value={toDate} />
@@ -475,12 +517,12 @@
           <p>Fra</p>
           <DateInput
             bind:value={fromDate}
-            styling="text-md text-center w-full text-gray-800 bg-slate-50"
+            styling="text-md text-center w-full text-gray-800 bg-slate-50 rounded-xl py-1.5"
           />
           <p>Til</p>
           <DateInput
             bind:value={toDate}
-            styling="text-md w-full text-gray-800 text-center bg-slate-50"
+            styling="text-md w-full text-gray-800 text-center bg-slate-50 rounded-xl py-1.5"
           />
         </div>
       </div>
@@ -565,10 +607,10 @@
         {/if}
       </div>
       {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
-        <div class="text-center">
-          {besked}
+        <div class="text-center flex flex-col mt-4">
+          <p>{besked}</p>
           <button
-            class="bg-[#111727] mt-6 text-white py-2 px-2 lg:w-1/3 rounded-lg w-full mx-auto border"
+            class="bg-[#111727] mt-2 text-white py-2 px-2 lg:w-1/3 rounded-lg w-full mx-auto border"
             type="submit"
             on:click={add}>Lav reservation</button
           >
@@ -649,6 +691,29 @@
                 {parseAndFormatDate2(chosenEvent.end)}
               </p>
             </div>
+          </div>
+          <div>
+            <!-- <div class="flex space-x-1">
+              <p>
+                {getTimeUntilEvent(chosenEvent.start, chosenEvent.end)}
+              </p>
+            </div> -->
+            <button
+              class="mt-4 text-sm text-slate-600"
+              on:click={() => (opdaterReservation = !opdaterReservation)}
+            >
+              Opdater reservation
+            </button>
+            {#if opdaterReservation}
+              <div>
+                <button
+                  on:click={() => deleteReservation(chosenEvent.id)}
+                  class="mt-2 px-2 py-1 bg-red-700 rounded-xl border text-white"
+                >
+                  Slet reservation
+                </button>
+              </div>
+            {/if}
           </div>
         </div>
       {:else}

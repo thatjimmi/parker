@@ -28,7 +28,7 @@
     browseDate = value ? cloneDate(value) : browseDate
   }
   export let min = new Date(defaultDate.getFullYear() - 20, 0, 1)
-  export let max = new Date(defaultDate.getFullYear(), 11, 31, 23, 59, 59, 999)
+  export let max = new Date(defaultDate.getFullYear() + 1, 11, 31, 23, 59, 59, 999)
   $: if (value && value > max) {
     setValue(max)
   } else if (value && value < min) {

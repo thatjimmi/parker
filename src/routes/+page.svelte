@@ -34,8 +34,12 @@
     }
   }
 
+  let loading = true;
   onMount(async () => {
     await fetchEvents();
+    setTimeout(() => {
+      loading = false;
+    }, 1000);
   });
 
   // @ts-ignore
@@ -459,6 +463,7 @@
     }
 
     chosenEvent = {};
+    opdaterReservation = false;
     fetchEvents();
   }
 
@@ -634,7 +639,7 @@
         <h3 class="text-lg md:text-xl mb-2">
           <span class="text-gray-800">Kommende reserveringer </span>
         </h3>
-        {#if nearestEvents && nearestEvents.length > 0}
+        {#if nearestEvents && nearestEvents.length > 0 && !loading}
           <div class="grid md:grid-cols-2 gap-4">
             {#each nearestEvents as event}
               <div class="bg-white rounded-2xl p-4 border">
@@ -657,21 +662,66 @@
             {/each}
           </div>
         {:else}
-          <div>
-            <p>Ingen kommende reservationer</p>
+          <div
+            class="flex items-center justify-between p-4 bg-white border rounded-xl animate-pulse w-1/2"
+          >
+            <div class="space-y-2">
+              <div class="h-6 w-32 bg-gray-300 rounded" />
+              <div class="h-4 w-48 bg-gray-300 rounded" />
+              <div class="h-4 w-40 bg-gray-300 rounded" />
+              <div class="h-4 w-40 bg-gray-300 rounded" />
+            </div>
           </div>
         {/if}
       </div>
-      <div class="">
-        {#key plugins}
-          <button
-            on:click={() => setOptionsPlugins()}
-            class="text-gray-700 bg-white border py-1 px-2 rounded-lg text-sm mb-2"
-            >Skift kalendervisning</button
-          >
-          <Calendar {plugins} {options} />
-        {/key}
-      </div>
+      {#if !loading}
+        <div class="">
+          {#key plugins}
+            <button
+              on:click={() => setOptionsPlugins()}
+              class="text-gray-700 bg-white border py-1 px-2 rounded-lg text-sm mb-2"
+              >Skift kalendervisning</button
+            >
+            <Calendar {plugins} {options} />
+          {/key}
+        </div>
+      {/if}
+      {#if loading}
+        <div
+          class="w-full mx-auto my-8 animate-pulse bg-white border p-4 rounded-xl"
+        >
+          <!-- Calendar Grid Skeleton -->
+          <div class="grid grid-cols-7 gap-3 py-2">
+            <!-- Column Header Skeletons -->
+
+            <div class="h-4 bg-gray-300 rounded" />
+            <div class="h-4 bg-gray-300 rounded" />
+            <div class="h-4 bg-gray-300 rounded" />
+            <div class="h-4 bg-gray-300 rounded" />
+            <div class="h-4 bg-gray-300 rounded" />
+            <div class="h-4 bg-gray-300 rounded" />
+            <div class="h-4 bg-gray-300 rounded" />
+            <!-- Calendar Day Skeletons (Repeat similar divs for each day) -->
+            <div class="gap-3 grid">
+              <div class="h-8 bg-gray-300 rounded" />
+              <div class="h-8 bg-gray-300 rounded" />
+            </div>
+            <div class="gap-3 grid">
+              <div class="h-8 bg-gray-400 rounded" />
+              <div class="h-8 bg-gray-400 rounded" />
+            </div>
+            <div class="gap-3 grid">
+              <div class="h-8 bg-gray-400 rounded" />
+              <div class="h-8 bg-gray-400 rounded" />
+            </div>
+            <!-- Highlighted Day Skeletons -->
+            <div class="h-8 bg-gray-400 rounded" />
+            <div class="h-8 bg-gray-400 rounded" />
+            <div class="h-8 bg-gray-400 rounded" />
+            <!-- ... other days -->
+          </div>
+        </div>
+      {/if}
       {#if chosenEvent && chosenEvent.id}
         <div class="mt-4 bg-white mx-auto px-4 pb-4 py-3 rounded-xl border">
           <h3 class="text-xl">
@@ -693,11 +743,6 @@
             </div>
           </div>
           <div>
-            <!-- <div class="flex space-x-1">
-              <p>
-                {getTimeUntilEvent(chosenEvent.start, chosenEvent.end)}
-              </p>
-            </div> -->
             <button
               class="mt-4 text-sm text-slate-600"
               on:click={() => (opdaterReservation = !opdaterReservation)}
@@ -708,7 +753,7 @@
               <div>
                 <button
                   on:click={() => deleteReservation(chosenEvent.id)}
-                  class="mt-2 px-2 py-1 bg-red-700 rounded-xl border text-white"
+                  class="mt-2 px-2.5 py-1 bg-red-700 rounded-xl text-white"
                 >
                   Slet reservation
                 </button>
@@ -716,7 +761,7 @@
             {/if}
           </div>
         </div>
-      {:else}
+      {:else if !loading}
         <div class="mt-4">
           <h3 class="text-xl">Ingen reservation valgt</h3>
         </div>

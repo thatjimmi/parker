@@ -661,7 +661,7 @@
               </div>
             {/each}
           </div>
-        {:else}
+        {:else if loading}
           <div
             class="flex items-center justify-between p-4 bg-white border rounded-xl animate-pulse w-1/2"
           >
@@ -671,6 +671,10 @@
               <div class="h-4 w-40 bg-gray-300 rounded" />
               <div class="h-4 w-40 bg-gray-300 rounded" />
             </div>
+          </div>
+        {:else}
+          <div class="">
+            <h3 class="text-lg text-slate-600">Ingen kommende reservationer</h3>
           </div>
         {/if}
       </div>

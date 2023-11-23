@@ -669,7 +669,7 @@
           </div>
         {:else if loading}
           <div
-            class="flex items-center justify-between p-4 bg-white border rounded-xl animate-pulse w-1/2"
+            class="flex items-center justify-between p-4 bg-white border rounded-xl animate-pulse w-full md:w-1/2"
           >
             <div class="space-y-2">
               <div class="h-6 w-32 bg-gray-300 rounded" />

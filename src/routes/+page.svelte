@@ -470,6 +470,12 @@
   $: timeUntilNextEvent = getTimeUntilNextEvent();
 </script>
 
+<svelte:head>
+  <title>Reservation af parkeringsplads</title>
+  <meta name="robots" content="noindex nofollow" />
+  <html lang="en" />
+</svelte:head>
+
 <!-- <h3
     class="text-3xl md:text-4xl xl:text-5xl text-center font-semibold pt-4 px-8"
 >

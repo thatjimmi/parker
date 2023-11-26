@@ -473,7 +473,6 @@
 <svelte:head>
   <title>Reservation af parkeringsplads</title>
   <meta name="robots" content="noindex nofollow" />
-  <html lang="en" />
 </svelte:head>
 
 <!-- <h3

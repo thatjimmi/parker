@@ -22,15 +22,27 @@
   let events = [];
 
   async function fetchEvents() {
+    const icon = document.querySelector(".ml-2 .w-5.h-5"); // Adjust the selector as needed
+    icon?.classList.add("spinning");
     // Fetch new event data
-    const response = await fetch("/api/airtable");
-    if (response.ok) {
-      const newData = await response.json();
-      // Update the events array
-      events = newData;
-      options.events = events;
-      nearestEvents = getNearestEvents();
-      timeUntilNextEvent = getTimeUntilNextEvent();
+    try {
+      const response = await fetch("/api/airtable");
+      if (response.ok) {
+        const newData = await response.json();
+        // Update the events array
+        events = newData;
+        options.events = events;
+        nearestEvents = getNearestEvents();
+        timeUntilNextEvent = getTimeUntilNextEvent();
+        setTimeout(() => {
+          icon?.classList.remove("spinning");
+        }, 2000); // 2000 milliseconds = 2 seconds
+      }
+    } catch (e) {
+      console.error("Error fetching events", e);
+      setTimeout(() => {
+        icon?.classList.remove("spinning");
+      }, 2000); // 2000 milliseconds = 2 seconds
     }
   }
 
@@ -507,7 +519,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor"
-        class="w-5 h-5"
+        class="w-5 h-5 spinning"
       >
         <path
           stroke-linecap="round"
@@ -794,3 +806,18 @@
     </div>
   {/if}
 </div>
+
+<style>
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .spinning {
+    animation: spin 1.5s linear;
+  }
+</style>

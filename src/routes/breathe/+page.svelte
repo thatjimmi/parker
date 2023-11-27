@@ -9,28 +9,28 @@
   let speed; // will be set dynamically
 
   let timeLeft = 298; // 5 minutes in seconds
-  let display = '4:58'
+  let display = "4:58";
 
   onMount(() => {
     const timer = setInterval(() => {
-  if (timeLeft > 0) {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    timeLeft -= 1;
-  } else {
-    display = '0:00';
+      if (timeLeft > 0) {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        display = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+        timeLeft -= 1;
+      } else {
+        display = "0:00";
 
-    clearInterval(timer);
-  }
-}, 1000);
+        clearInterval(timer);
+      }
+    }, 1000);
 
     const resizeHandler = () => {
-      edgeLength = container.offsetWidth - 20 // Set edgeLength based on container width
+      edgeLength = container.offsetWidth - 20; // Set edgeLength based on container width
       speed = 4000 / edgeLength; // Adjust speed accordingly
     };
 
-    window.addEventListener('resize', resizeHandler);
+    window.addEventListener("resize", resizeHandler);
     resizeHandler(); // Call once on mount to set initial values
 
     const updatePosition = () => {
@@ -55,12 +55,7 @@
       }
 
       return `top: ${top}px; left: ${left}px;`;
-    
     };
-
-
-
-    
 
     const interval = setInterval(() => {
       position = (position + 1) % (edgeLength * 4);
@@ -72,25 +67,38 @@
 
     return () => {
       clearInterval(interval);
-      window.removeEventListener('resize', resizeHandler);
+      window.removeEventListener("resize", resizeHandler);
     };
   });
-
-
- 
-
-
 </script>
 
-<div class="flex items-center flex-col justify-center w-full" style="height: 100svh;">
-  <div bind:this={container} class="relative bg-slate-50 border-black border-2 rounded-lg w-[200px] sm:max-w-[400px] h-[200px] sm:max-h-[400px]">
-    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-      <h1 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center">{text}</h1>
+<div
+  class="flex items-center flex-col justify-center w-full"
+  style="height: 100svh;"
+>
+  <div
+    bind:this={container}
+    class="relative bg-slate-50 border-black border-2 rounded-lg w-[200px] sm:max-w-[400px] h-[200px] sm:max-h-[400px]"
+  >
+    <div
+      class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+    >
+      <h1
+        class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center"
+      >
+        {text}
+      </h1>
     </div>
-    <div bind:this={dot} class="absolute w-4 h-4 rounded-full border bg-black"></div>
+    <div
+      bind:this={dot}
+      class="absolute w-4 h-4 rounded-full border bg-black"
+    ></div>
   </div>
-  <div > 
-    <h1 class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center">{display}</h1>
+  <div>
+    <h1
+      class="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center"
+    >
+      {display}
+    </h1>
   </div>
 </div>
-

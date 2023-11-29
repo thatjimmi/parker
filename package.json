@@ -33,6 +33,7 @@
     "airtable": "^0.12.1",
     "logsnag": "^0.1.6",
     "marked": "^4.3.0",
-    "pdfkit": "^0.13.0"
+    "pdfkit": "^0.13.0",
+    "svelte-french-toast": "^1.2.0"
   }
 }

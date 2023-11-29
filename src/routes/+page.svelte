@@ -1,5 +1,6 @@
 <!-- https://github.com/vkurko/calendar -->
 <script>
+  import toast, { Toaster } from "svelte-french-toast";
   // import Calendar from "../components/@event-calendar/core";
   // @ts-ignore
   import Calendar from "@event-calendar/core";
@@ -235,12 +236,12 @@
 
     // check if start and end is the same
     if (start.getTime() === end.getTime()) {
-      alert("Starttidspunkt og sluttidspunkt kan ikke være det samme");
+      toast.error("Starttidspunkt og sluttidspunkt kan ikke være det samme");
       return;
     }
 
     if (start > end) {
-      alert("Starttidspunkt skal være før sluttidspunkt");
+      toast.error("Starttidspunkt skal være før sluttidspunkt");
       return;
     }
 
@@ -259,7 +260,7 @@
     });
 
     if (overlappingEventsCount >= 2) {
-      alert("Denne tid har allerede to reservationer");
+      toast.error("Denne tid har allerede to reservationer");
       return;
     }
 
@@ -280,11 +281,14 @@
     const data = await response.json();
 
     if (data.error) {
-      alert(data.error);
+      toast.error(data.error);
       return;
     }
 
     nearestEvents = getNearestEvents();
+
+    toast.success("Reservation oprettet");
+
     fetchEvents();
 
     clearFields();
@@ -443,7 +447,7 @@
     const data = await response.json();
 
     if (data.error) {
-      alert(data.error);
+      toast.error(data.error);
       return;
     }
 
@@ -470,12 +474,15 @@
     const data = await response.json();
 
     if (data.error) {
-      alert(data.error);
+      toast.error(data.error);
       return;
     }
 
     chosenEvent = {};
     opdaterReservation = false;
+
+    toast.success("Reservation slettet");
+
     fetchEvents();
   }
 
@@ -492,6 +499,7 @@
 >
     Reservation af parkeringsplads
 </h3> -->
+<Toaster />
 <div
   class="flex flex-col px-4 justify-center bg-[#F7F7F7] max-w-12xl mx-auto text-[#16182F]"
 >

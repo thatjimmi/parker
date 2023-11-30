@@ -1,20 +1,19 @@
-# create-svelte
+# Parker - Simple Reservation System for Housing Association
+This application was developed to address the need for a streamlined reservation process for two parking spots within my housing association, ensuring efficient and fair access for all residents.
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+## Features
+* Make a Reservation: Allows users to easily book a parking spot.
+* View Next Reservation: Enables users to see upcoming reservations for each parking spot.
+* Delete Reservations: Provides an option to cancel reservations when plans change.
+* Toggle Calendar Views: Switch between different calendar layouts for better date visibility.
+* Reservation Logic: Ensures only two people can reserve a spot at any given time, preventing double bookings.
 
-## Creating a project
+### Screenshots
+<img width="689" alt="image" src="https://github.com/thatjimmi/parker/assets/52856973/9ddfa813-7ecc-4ebc-8026-cebd8cb2d2f6">
 
-If you're seeing this, you've probably already done this step. Congrats!
+<img width="687" alt="image" src="https://github.com/thatjimmi/parker/assets/52856973/2a4675f6-6ffe-453d-9cfe-496c8674091c">
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
+## How to run the project
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
 
@@ -25,17 +24,8 @@ npm run dev
 npm run dev -- --open
 ```
 
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
-# reserver
 
-hey
+

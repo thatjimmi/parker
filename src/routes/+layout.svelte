@@ -1,26 +1,15 @@
 <script>
+  import Nav from "../components/Nav.svelte";
   import "../style.css";
+  import { onMount } from "svelte";
+  import { fetchEvents } from "../lib/store";
 
-  // try {
-  //   if (typeof window !== "undefined" && window) {
-  //     const googleAnalyticsId = "G-7SYZV40WPN";
-  //     window.dataLayer = window.dataLayer || [];
-  //     function gtag() {
-  //       window.dataLayer.push(arguments);
-  //     }
-  //     gtag("js", new Date());
-  //     gtag("config", googleAnalyticsId);
-  //   }
-  // } catch (error) {
-  //   console.error("Failed to initialize Analytics");
-  // }
+  onMount(() => {
+    fetchEvents("/api/airtable");
+  });
 </script>
 
 <svelte:head>
-  <!-- <script
-    async
-    src="https://www.googletagmanager.com/gtag/js?id=G-7SYZV40WPN"
-  ></script> -->
   <link rel="manifest" href="/manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -38,9 +27,5 @@
   <meta name="theme-color" content="#ffffff" />
 </svelte:head>
 
+<Nav />
 <slot />
-
-<!-- <Footer /> -->
-
-<style>
-</style>

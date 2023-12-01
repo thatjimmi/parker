@@ -2,6 +2,11 @@
 
 This application was developed to address the need for a streamlined reservation process for two parking spots within my housing association, ensuring efficient and fair access for all residents.
 
+## Tech Stack:
+
+- SvelteKit / JavaScript / TypeScript
+- Airtable
+
 ## Features
 
 - Make a Reservation: Allows users to easily book a parking spot.
@@ -18,7 +23,9 @@ This application was developed to address the need for a streamlined reservation
 
 ## How to run the project
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Create a .env file with `AIRTABLE_API_KEY` and `AIRTABLE_BASE_ID`.
+
+Once you've installed dependencies with `npm install`, start a development server:
 
 ```bash
 npm run dev

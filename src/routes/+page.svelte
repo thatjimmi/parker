@@ -10,7 +10,7 @@
 </svelte:head>
 
 <div
-  class="flex space-y-4 flex-col px-4 justify-center w-full bg-[#F7F7F7] max-w-5xl mx-auto text-[#16182F]"
+  class="flex space-y-4 flex-col px-4 pb-6 justify-center w-full bg-[#F7F7F7] max-w-5xl mx-auto text-[#16182F]"
 >
   <Upcoming loadingState={$loading} />
   <CalendarView loadingState={$loading} />

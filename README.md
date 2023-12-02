@@ -15,6 +15,10 @@ This application was developed to address the need for a streamlined reservation
 - Toggle Calendar Views: Switch between different calendar layouts for better date visibility.
 - Reservation Logic: Ensures only two people can reserve a spot at any given time, preventing double bookings.
 
+### Backlog
+
+- [ ] Show when booking was created
+
 ### Screenshots
 
 <img width="689" alt="image" src="https://github.com/thatjimmi/parker/assets/52856973/9ddfa813-7ecc-4ebc-8026-cebd8cb2d2f6">

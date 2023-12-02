@@ -1,4 +1,4 @@
-# Parker - Simple Reservation System for Housing Association
+# Parker - Parking Reservation System
 
 This application was developed to address the need for a streamlined reservation process for two parking spots within my housing association, ensuring efficient and fair access for all residents.
 

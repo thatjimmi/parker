@@ -182,17 +182,23 @@
     <span class="text-gray-800">Lav reservation</span>
   </h3>
   <div class="lg:flex space-x-4 hidden">
-    <div class="flex flex-col w-1/2 border pb-4 px-4 pt-4 rounded-2xl bg-white">
-      <span class="mb-2">Fra </span>
+    <div
+      class="flex flex-col w-1/2 border pb-4 px-4 pt-4 rounded-2xl bg-white border-b-[6px] border-b-[#dfdfdf]"
+    >
+      <span class="mb-2 ml-2">Fra </span>
       <DatePicker bind:value={fromDate} />
     </div>
-    <div class="flex flex-col w-1/2 border pb-4 px-4 pt-4 rounded-2xl bg-white">
-      <span class="mb-2">Til </span>
+    <div
+      class="flex flex-col w-1/2 border pb-4 px-4 pt-4 rounded-2xl bg-white border-b-[6px] border-b-[#dfdfdf]"
+    >
+      <span class="mb-2 ml-2">Til </span>
       <DatePicker bind:value={toDate} />
     </div>
   </div>
   <div class="flex flex-col lg:hidden">
-    <div class="mx-auto space-y-1 w-full rounded-xl bg-white p-4 border">
+    <div
+      class="mx-auto space-y-1 w-full rounded-xl bg-white p-4 border border-b-[6px] border-b-[#dfdfdf]"
+    >
       <p>Fra</p>
       <DateInput
         bind:value={fromDate}
@@ -208,7 +214,7 @@
 
   <div class="lg:flex pt-4 lg:space-x-4 space-y-2 lg:space-y-0">
     <div
-      class="flex flex-col space-y-4 lg:w-1/2 mx-auto bg-white p-4 rounded-xl border"
+      class="flex flex-col space-y-4 lg:w-1/2 mx-auto bg-white p-4 rounded-xl border border-b-[6px] border-b-[#dfdfdf]"
     >
       <div class="flex space-x-2">
         <div class="flex flex-col w-full space-y-2">
@@ -260,7 +266,7 @@
     </div>
     {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
       <div
-        class=" text-gray-900 lg:w-1/2 space-y-4 bg-white p-4 rounded-xl border"
+        class=" text-gray-900 lg:w-1/2 space-y-4 bg-white p-4 rounded-xl border border-b-[6px] border-b-[#dfdfdf]"
       >
         <div class="space-y-2">
           <p>Valgt fra</p>

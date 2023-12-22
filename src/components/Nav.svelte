@@ -15,7 +15,9 @@
 </script>
 
 <div class="flex pt-4 justify-center items-center">
-  <div class="border rounded-3xl overflow-hidden">
+  <div
+    class="border rounded-3xl overflow-hidden border-b-[4px] border-b-[#dfdfdf]"
+  >
     <button
       class="{active === 'overview' ? 'bg-white  ' : ''}  px-3 pl-4 py-1"
       on:click={toggleSwitch}

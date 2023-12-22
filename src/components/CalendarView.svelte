@@ -108,7 +108,7 @@
   <div class="flex">
     <button
       on:click={() => setOptionsPlugins()}
-      class="text-gray-700 bg-white border py-1 px-2 rounded-lg text-sm mb-2"
+      class="text-gray-700 bg-white border py-1 px-2 rounded-lg text-sm border-b-[3px] border-b-[#dfdfdf]"
       >Skift kalendervisning</button
     >
   </div>
@@ -116,7 +116,9 @@
     <Calendar {plugins} {options} />
   {/key}
   {#if chosenEvent && chosenEvent.id}
-    <div class="mt-4 bg-white mx-auto px-4 pb-4 py-3 rounded-xl border w-full">
+    <div
+      class="mt-4 bg-white mx-auto px-4 pb-4 py-3 border border-b-[6px] border-b-[#dfdfdf] rounded-xl w-full"
+    >
       <h3 class="text-xl">
         <span class="">Reservation af</span>
         {chosenEvent?.title}
@@ -146,7 +148,7 @@
           <div>
             <button
               on:click={() => deleteReservation(chosenEvent.id)}
-              class="mt-2 px-2.5 py-1 bg-red-700 rounded-xl text-white"
+              class="mt-2 px-2.5 py-1 bg-red-700 rounded-lg text-white"
             >
               Slet reservation
             </button>

@@ -94,7 +94,9 @@
       {#if nearestEvents && nearestEvents.length > 0}
         <div class="grid md:grid-cols-2 gap-4">
           {#each nearestEvents as event}
-            <div class="bg-white rounded-2xl p-4 border">
+            <div
+              class="bg-white rounded-2xl p-4 border border-b-[6px] border-b-[#dfdfdf]"
+            >
               <h4 class="md:text-lg">{event.title}</h4>
               <span class="text-[16px] text-gray-700 flex">
                 {getTimeUntilEvent(event.start, event.end)}

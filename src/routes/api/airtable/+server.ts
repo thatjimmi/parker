@@ -1,7 +1,6 @@
 import Airtable from 'airtable';
-import { AIRTABLE_API_KEY, AIRTABLE_BASE_ID } from '$env/static/private';
-
-const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE_ID);
+import { AIRTABLE_BASE_ID, AIRTABLE_ACCESS_TOKEN } from '$env/static/private';
+const base = new Airtable({ apiKey: AIRTABLE_ACCESS_TOKEN }).base(AIRTABLE_BASE_ID);
 
 /** @type {import('./$types').RequestHandler}*/
 export const POST = async ({ request }) => {

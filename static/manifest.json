@@ -1,21 +1,21 @@
 {
-    "name": "Parker",
-    "short_name": "Parker",
-    "start_url": "/",
-    "scope": "/",
-    "icons": [
-        {
-            "src": "/android-chrome-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "/android-chrome-384x384.png",
-            "sizes": "384x384",
-            "type": "image/png"
-        }
-    ],
-    "theme_color": "#fff19f",
-    "background_color": "#fff19f",
-    "display": "standalone"
+  "name": "Parker",
+  "short_name": "Parker",
+  "start_url": "/",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#F7F7F7",
+  "background_color": "#F7F7F7",
+  "display": "standalone"
 }

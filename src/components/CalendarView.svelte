@@ -162,8 +162,12 @@
     </div>
   {/if}
 {:else}
-  <div class="h-6 bg-white border mt-2 animate-pulse rounded w-1/6" />
-  <div class="w-full mx-auto my-2 animate-pulse bg-white border p-4 rounded-xl">
+  <div
+    class="h-8 bg-white border mt-2 animate-pulse rounded-lg w-1/6 border-b-[3px] border-b-[#dfdfdf]"
+  />
+  <div
+    class="w-full mx-auto my-2 animate-pulse bg-white border p-4 rounded-xl border-b-[6px] border-b-[#dfdfdf]"
+  >
     <div class="grid grid-cols-7 gap-3 py-2">
       <div class="h-4 bg-gray-300 rounded" />
       <div class="h-4 bg-gray-300 rounded" />

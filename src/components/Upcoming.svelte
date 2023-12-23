@@ -124,7 +124,7 @@
   </div>
 {:else}
   <div
-    class="flex items-center justify-between p-4 mt-4 bg-white border rounded-xl animate-pulse w-full md:w-1/2"
+    class="flex items-center justify-between p-4 mt-14 bg-white border rounded-2xl animate-pulse w-full md:w-1/2 border-b-[6px] border-b-[#dfdfdf]"
   >
     <div class="space-y-2">
       <div class="h-6 w-32 bg-gray-300 rounded" />

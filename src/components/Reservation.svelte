@@ -36,13 +36,12 @@
       month: "long",
       day: "numeric",
       hour: "numeric",
+      timeZone: "UTC",
       minute: "numeric",
     };
 
     // @ts-ignore
-    const formatter = new Intl.DateTimeFormat("da-DK", options, {
-      timeZone: "Europe/Copenhagen",
-    });
+    const formatter = new Intl.DateTimeFormat("da-DK", options);
 
     const formattedDate = formatter.format(date);
 
@@ -54,10 +53,11 @@
   function combineDateAndTime(dateObj, timeString) {
     const [hours, minutes] = timeString.split(":");
     const newDateObj = new Date(dateObj.getTime());
-    newDateObj.setHours(Number(hours));
     newDateObj.setMinutes(Number(minutes));
     newDateObj.setSeconds(0);
     newDateObj.setMilliseconds(0);
+    // format to local time
+    newDateObj.setUTCHours(Number(hours));
 
     return newDateObj;
   }
@@ -65,6 +65,10 @@
   async function add() {
     const start = combineDateAndTime(fromDate, starttidspunkt);
     const end = combineDateAndTime(toDate, endetidspunkt);
+
+    // start and end parsed to UTC
+    console.log(formatDate(start));
+    console.log(formatDate(end));
 
     // check if start and end is the same
     if (start.getTime() === end.getTime()) {
@@ -100,6 +104,8 @@
       start: start,
       end: end,
     };
+
+    console.log(body);
 
     const response = await fetch("api/airtable", {
       method: "POST",
@@ -177,11 +183,11 @@
 </script>
 
 <Toaster />
-<div class="pb-8 w-full mx-auto m-4 rounded-xl">
-  <h3 class="text-lg md:text-xl mb-2">
+<div class="w-full pb-8 m-4 mx-auto rounded-xl">
+  <h3 class="mb-2 text-lg md:text-xl">
     <span class="text-gray-800">Lav reservation</span>
   </h3>
-  <div class="lg:flex space-x-4 hidden">
+  <div class="hidden space-x-4 lg:flex">
     <div
       class="flex flex-col w-1/2 border pb-4 px-4 pt-4 rounded-2xl bg-white border-b-[6px] border-b-[#dfdfdf]"
     >
@@ -212,7 +218,7 @@
     </div>
   </div>
 
-  <div class="lg:flex pt-4 lg:space-x-4 space-y-2 lg:space-y-0">
+  <div class="pt-4 space-y-2 lg:flex lg:space-x-4 lg:space-y-0">
     <div
       class="flex flex-col space-y-4 lg:w-1/2 mx-auto bg-white p-4 rounded-xl border border-b-[6px] border-b-[#dfdfdf]"
     >
@@ -255,7 +261,7 @@
         </label>
 
         <input
-          class="bg-slate-50 px-4 py-2 text-gray-800 rounded-lg border"
+          class="px-4 py-2 text-gray-800 border rounded-lg bg-slate-50"
           type="text"
           id="title"
           placeholder="Navn, lejlighed, evt. bil"
@@ -270,13 +276,13 @@
       >
         <div class="space-y-2">
           <p>Valgt fra</p>
-          <p class="bg-slate-50 px-4 py-2 rounded-lg border">
+          <p class="px-4 py-2 border rounded-lg bg-slate-50">
             {parseAndFormatDate(combineDateAndTime(fromDate, starttidspunkt))}
           </p>
         </div>
         <div class="space-y-2">
           <p>Til</p>
-          <p class="bg-slate-50 px-4 py-2 rounded-lg border">
+          <p class="px-4 py-2 border rounded-lg bg-slate-50">
             {parseAndFormatDate(combineDateAndTime(toDate, endetidspunkt))}
           </p>
         </div>
@@ -286,11 +292,11 @@
         <p>Ser det rigtigt ud?</p>
       </div>
     {:else}
-      <div class="rounded-lg text-gray-900 text-center lg:w-1/2" />
+      <div class="text-center text-gray-900 rounded-lg lg:w-1/2" />
     {/if}
   </div>
   {#if fromDate && toDate && starttidspunkt && endetidspunkt && title}
-    <div class="text-center flex flex-col mt-4">
+    <div class="flex flex-col mt-4 text-center">
       <p>{besked}</p>
       <button
         class="bg-[#111727] mt-2 text-white py-2 px-2 lg:w-1/3 rounded-lg w-full mx-auto border"
@@ -301,7 +307,7 @@
   {:else}
     <div class="text-center">
       <p
-        class="bg-gray-300 mt-6 text-gray-500 py-2 px-2 lg:w-1/3 w-full rounded-lg mx-auto border"
+        class="w-full px-2 py-2 mx-auto mt-6 text-gray-500 bg-gray-300 border rounded-lg lg:w-1/3"
       >
         Lav reservation
       </p>

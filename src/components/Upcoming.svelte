@@ -28,6 +28,7 @@
 
   function parseAndFormatDate(timeString) {
     const date = new Date(timeString);
+
     return formatDate(date);
   }
 
@@ -38,13 +39,12 @@
       month: "long",
       day: "numeric",
       hour: "numeric",
+      timeZone: "UTC",
       minute: "numeric",
     };
 
     // @ts-ignore
-    const formatter = new Intl.DateTimeFormat("da-DK", options, {
-      timeZone: "Europe/Copenhagen",
-    });
+    const formatter = new Intl.DateTimeFormat("da-DK", options);
 
     const formattedDate = formatter.format(date);
 
@@ -87,12 +87,12 @@
 
 {#if !loadingState}
   <div class="w-full mx-auto rounded-xl">
-    <div class="mt-4 mx-auto">
-      <h3 class="text-lg md:text-xl mb-2">
+    <div class="mx-auto mt-4">
+      <h3 class="mb-2 text-lg md:text-xl">
         <span class="text-gray-800">Kommende reserveringer </span>
       </h3>
       {#if nearestEvents && nearestEvents.length > 0}
-        <div class="grid md:grid-cols-2 gap-4">
+        <div class="grid gap-4 md:grid-cols-2">
           {#each nearestEvents as event}
             <div
               class="bg-white rounded-2xl p-4 border border-b-[6px] border-b-[#dfdfdf]"
@@ -127,10 +127,10 @@
     class="flex items-center justify-between p-4 mt-14 bg-white border rounded-2xl animate-pulse w-full md:w-1/2 border-b-[6px] border-b-[#dfdfdf]"
   >
     <div class="space-y-2">
-      <div class="h-6 w-32 bg-gray-300 rounded" />
-      <div class="h-4 w-48 bg-gray-300 rounded" />
-      <div class="h-4 w-40 bg-gray-300 rounded" />
-      <div class="h-4 w-40 bg-gray-300 rounded" />
+      <div class="w-32 h-6 bg-gray-300 rounded" />
+      <div class="w-48 h-4 bg-gray-300 rounded" />
+      <div class="w-40 h-4 bg-gray-300 rounded" />
+      <div class="w-40 h-4 bg-gray-300 rounded" />
     </div>
   </div>
 {/if}

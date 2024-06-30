@@ -16,6 +16,7 @@
     "@event-calendar/list": "^1.3.0",
     "@event-calendar/time-grid": "^1.3.0",
     "@sveltejs/adapter-netlify": "^1.0.0-next.88",
+    "@sveltejs/adapter-static": "^3.0.1",
     "@sveltejs/kit": "^1.0.0-next.587",
     "@tailwindcss/typography": "^0.5.9",
     "autoprefixer": "^10.4.7",
@@ -28,7 +29,14 @@
   },
   "type": "module",
   "dependencies": {
+    "@internationalized/date": "^3.5.4",
     "airtable": "^0.12.1",
-    "svelte-french-toast": "^1.2.0"
+    "bits-ui": "^0.21.10",
+    "clsx": "^2.1.1",
+    "radix-icons-svelte": "^1.2.1",
+    "svelte-french-toast": "^1.2.0",
+    "svelte-radix": "^1.1.0",
+    "tailwind-merge": "^2.3.0",
+    "tailwind-variants": "^0.2.1"
   }
 }

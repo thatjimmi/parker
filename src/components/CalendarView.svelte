@@ -26,6 +26,7 @@
       minute: "numeric",
     };
 
+    // @ts-ignore
     const formatter = new Intl.DateTimeFormat("da-DK", options, {
       timeZone: "Europe/Copenhagen",
     });
@@ -37,10 +38,9 @@
     return replace.charAt(0).toUpperCase() + replace.slice(1);
   }
 
-  function parseAndFormatDate2(timeString) {
+  function parseAndFormatDate(timeString) {
     const date = new Date(timeString);
-    const oneHourLater = date.setHours(date.getHours() + 1);
-    return formatDate(new Date(oneHourLater));
+    return formatDate(date);
   }
 
   function setOptionsPlugins() {
@@ -123,17 +123,17 @@
         <span class="">Reservation af</span>
         {chosenEvent?.title}
       </h3>
-      <div class="flex text-gray-600 space-x-2 text-sm">
-        <div class="space-y-0 w-1/2">
+      <div class="flex space-x-2 text-sm text-gray-600">
+        <div class="w-1/2 space-y-0">
           <p>Fra</p>
-          <p class=" text-gray-800">
-            {parseAndFormatDate2(chosenEvent.start)}
+          <p class="text-gray-800">
+            {parseAndFormatDate(chosenEvent.start)}
           </p>
         </div>
-        <div class="space-y-0 w-1/2">
+        <div class="w-1/2 space-y-0">
           <p>Til</p>
-          <p class=" text-gray-800">
-            {parseAndFormatDate2(chosenEvent.end)}
+          <p class="text-gray-800">
+            {parseAndFormatDate(chosenEvent.end)}
           </p>
         </div>
       </div>
@@ -176,15 +176,15 @@
       <div class="h-4 bg-gray-300 rounded" />
       <div class="h-4 bg-gray-300 rounded" />
       <div class="h-4 bg-gray-300 rounded" />
-      <div class="gap-3 grid">
+      <div class="grid gap-3">
         <div class="h-8 bg-gray-300 rounded" />
         <div class="h-8 bg-gray-300 rounded" />
       </div>
-      <div class="gap-3 grid">
+      <div class="grid gap-3">
         <div class="h-8 bg-gray-400 rounded" />
         <div class="h-8 bg-gray-400 rounded" />
       </div>
-      <div class="gap-3 grid">
+      <div class="grid gap-3">
         <div class="h-8 bg-gray-400 rounded" />
         <div class="h-8 bg-gray-400 rounded" />
       </div>
